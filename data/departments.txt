@@ -1,0 +1,85 @@
+("New York", "00000162-326e-d29e-a1eb-ffeedb240000") debugger eval code:1:48
+("London", "00000162-326e-d29e-a1eb-ffeedac40000") debugger eval code:1:48
+("Hong Kong", "00000162-326e-d29e-a1eb-ffeed07f0000") debugger eval code:1:48
+("Paris", "00000162-326e-d29e-a1eb-ffeee3f40000") debugger eval code:1:48
+("Geneva", "00000162-326e-d29e-a1eb-ffeed0370000") debugger eval code:1:48
+("Amsterdam", "00000162-326e-d29e-a1eb-ffeededa0000") debugger eval code:1:48
+("Chatsworth", "00000162-326e-d29e-a1eb-ffeedaee0000") debugger eval code:1:48
+("Derbyshire", "00000162-326e-d29e-a1eb-ffeedf2e0000") debugger eval code:1:48
+("Doha", "00000162-326e-d29e-a1eb-ffeee52c0000") debugger eval code:1:48
+("Dubai", "00000162-326e-d29e-a1eb-ffeed10b0000") debugger eval code:1:48
+("Los Angeles", "00000162-326e-d29e-a1eb-ffeeda420000") debugger eval code:1:48
+("Miami", "00000162-326e-d29e-a1eb-ffeedc1e0000") debugger eval code:1:48
+("Milan", "00000162-326e-d29e-a1eb-ffeed6170000") debugger eval code:1:48
+("Montauk", "00000162-326e-d29e-a1eb-ffeed9f80000") debugger eval code:1:48
+("Mumbai", "00000162-326e-d29e-a1eb-ffeeda6a0000") debugger eval code:1:48
+("New York | Online", "00000162-326e-d29e-a1eb-ffeee6730000") debugger eval code:1:48
+("Palm Beach", "00000162-326e-d29e-a1eb-ffeeda1d0000") debugger eval code:1:48
+("San Francisco", "00000162-326e-d29e-a1eb-ffeedb9a0000") debugger eval code:1:48
+("Singapore", "00000162-326e-d29e-a1eb-ffeed9370000") debugger eval code:1:48
+("Tel Aviv", "00000162-326e-d29e-a1eb-ffeed59e0000") debugger eval code:1:48
+("Zurich", "00000162-326e-d29e-a1eb-ffeed5170000") debugger eval code:1:48
+("Contemporary Art", "00000164-609b-d1db-a5e6-e9ff01230000") debugger eval code:1:48
+("Impressionist & Modern Art", "00000164-609b-d1db-a5e6-e9ff08ab0000") debugger eval code:1:48
+("Jewelry", "00000164-609b-d1db-a5e6-e9ff0ccd0000") debugger eval code:1:48
+("Watches", "00000164-609a-d1db-a5e6-e9fffc050000") debugger eval code:1:48
+("Chinese Works of Art", "00000164-609b-d1db-a5e6-e9ff0b150000") debugger eval code:1:48
+("19th Century European Paintings", "00000164-609a-d1db-a5e6-e9fff79f0000") debugger eval code:1:48
+("19th Century Furniture & Sculpture", "00000164-609b-d1db-a5e6-e9ff043c0000") debugger eval code:1:48
+("20th Century Design", "00000164-609a-d1db-a5e6-e9fffe5f0000") debugger eval code:1:48
+("Aboriginal Art", "00000164-609a-d1db-a5e6-e9ffff8d0000") debugger eval code:1:48
+("African & Oceanic Art", "00000164-609b-d1db-a5e6-e9ff01850000") debugger eval code:1:48
+("African Modern & Contemporary Art", "00000164-609a-d1db-a5e6-e9fffdf80000") debugger eval code:1:48
+("American Art", "00000164-609b-d1db-a5e6-e9ff0a800000") debugger eval code:1:48
+("American Furniture, Decorative Art & Folk Art", "00000164-609b-d1db-a5e6-e9ff00c20000") debugger eval code:1:48
+("Ancient Sculpture and Works of Art", "00000164-609a-d1db-a5e6-e9fff35f0000") debugger eval code:1:48
+("Automobiles | RM Sotheby's", "00000164-609a-d1db-a5e6-e9fffd920000") debugger eval code:1:48
+("Books & Manuscripts", "00000164-609b-d1db-a5e6-e9ff03270000") debugger eval code:1:48
+("British Paintings 1550-1850", "00000164-609b-d1db-a5e6-e9ff06270000") debugger eval code:1:48
+("British Watercolours & Drawings 1550-1850", "00000164-609a-d1db-a5e6-e9fff8660000") debugger eval code:1:48
+("Canadian Art", "00000164-609a-d1db-a5e6-e9fffffb0000") debugger eval code:1:48
+("Chinese Paintings – Classical", "00000164-609b-d1db-a5e6-e9ff08440000") debugger eval code:1:48
+("Chinese Paintings – Modern", "00000164-609b-d1db-a5e6-e9ff0ba60000") debugger eval code:1:48
+("Clocks & Barometers", "00000164-609b-d1db-a5e6-e9ff00600000") debugger eval code:1:48
+("Coins and Medals", "00000164-609b-d1db-a5e6-e9ff0c320000") debugger eval code:1:48
+("Contemporary Arab, Iranian & Turkish Art", "00000164-609a-d1db-a5e6-e9fffd2c0000") debugger eval code:1:48
+("Contemporary Ink Art", "00000164-609a-d1db-a5e6-e9fff6760000") debugger eval code:1:48
+("English Furniture", "00000164-609b-d1db-a5e6-e9ff0b610000") debugger eval code:1:48
+("European Ceramics", "00000164-609a-d1db-a5e6-e9fff9320000") debugger eval code:1:48
+("European Sculpture & Works of Art", "00000164-609a-d1db-a5e6-e9fffa760000") debugger eval code:1:48
+("French & Continental Furniture", "00000164-609b-d1db-a5e6-e9ff0bec0000") debugger eval code:1:48
+("Handbags and Accessories", "0000016d-01ed-d6c8-a77d-19ff8f010001") debugger eval code:1:48
+("House Sales & Private Collections", "00000164-609a-d1db-a5e6-e9fffa0b0000") debugger eval code:1:48
+("Indian, Himalayan & Southeast Asian Art", "00000164-609a-d1db-a5e6-e9ffff270000") debugger eval code:1:48
+("Indian & South Asian Modern & Contemporary Art", "00000164-609b-d1db-a5e6-e9ff07220000") debugger eval code:1:48
+("Irish Art", "00000164-609b-d1db-a5e6-e9ff068c0000") debugger eval code:1:48
+("Islamic Art", "00000164-609b-d1db-a5e6-e9ff09100000") debugger eval code:1:48
+("Israeli & International Art", "00000164-609b-d1db-a5e6-e9ff055d0000") debugger eval code:1:48
+("Japanese Art", "00000164-f0d1-d221-a575-f2fda8e90000") debugger eval code:1:48
+("Judaica", "00000164-609a-d1db-a5e6-e9fffb460000") debugger eval code:1:48
+("Latin American Art", "00000164-609b-d1db-a5e6-e9ff0a350000") debugger eval code:1:48
+(" Luxury Collectibles", "0000016d-16fd-d23f-affd-f6fdebac0001") debugger eval code:1:48
+("Modern & Contemporary Southeast Asian Art", "00000164-609b-d1db-a5e6-e9ff04fc0000") debugger eval code:1:48
+("Modern & Post-War British Art", "00000164-609b-d1db-a5e6-e9ff02b50000") debugger eval code:1:48
+("Modern Asian Art", "00000164-609a-d1db-a5e6-e9fff8ca0000") debugger eval code:1:48
+("Musical Instruments", "00000164-609a-d1db-a5e6-e9fffc6a0000") debugger eval code:1:48
+("Objects of Vertu", "00000164-609a-d1db-a5e6-e9fff4f10000") debugger eval code:1:48
+("Old Master Drawings", "00000164-609b-d1db-a5e6-e9ff07e20000") debugger eval code:1:48
+("Old Master Paintings", "00000164-609a-d1db-a5e6-e9fffadc0000") debugger eval code:1:48
+("Orientalist Paintings", "00000164-609a-d1db-a5e6-e9fff5b50000") debugger eval code:1:48
+("Photographs", "00000164-609a-d1db-a5e6-e9fff73c0000") debugger eval code:1:48
+("Pre-Columbian Art", "00000164-609b-d1db-a5e6-e9ff03900000") debugger eval code:1:48
+("Prints", "00000164-609b-d1db-a5e6-e9ff09a60000") debugger eval code:1:48
+("Rugs & Carpets", "00000164-609b-d1db-a5e6-e9ff09ed0000") debugger eval code:1:48
+("Russian Art", "00000164-609a-d1db-a5e6-e9fffec40000") debugger eval code:1:48
+("Scottish Art", "00000164-609a-d1db-a5e6-e9fff3c20000") debugger eval code:1:48
+("Silver", "00000164-609a-d1db-a5e6-e9fffba40000") debugger eval code:1:48
+("Special Projects", "00000164-609b-d1db-a5e6-e9ff049d0000") debugger eval code:1:48
+("Spirits", "0000016d-6f17-ddcf-a3ed-ff7fde360000") debugger eval code:1:48
+("Stamps", "00000164-609b-d1db-a5e6-e9ff024e0000") debugger eval code:1:48
+("Swiss Art", "00000164-609b-d1db-a5e6-e9ff0acd0000") debugger eval code:1:48
+("Victorian, Pre-Raphaelite & British Impressionist Art", "00000164-609a-d1db-a5e6-e9fff6150000") debugger eval code:1:48
+("Wine & Spirits", "00000164-609a-d1db-a5e6-e9fffcc80000") debugger eval code:1:48
+("Exhibition", "EXHIBITION") debugger eval code:1:48
+("Live", "LIVE") debugger eval code:1:48
+
