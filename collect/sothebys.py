@@ -1,4 +1,18 @@
+import datetime
+import re
+import time
+
+import requests
+from django.db import IntegrityError
+from bs4 import BeautifulSoup
+from dateutil.parser import parse
+
 from main.models import (Auction, AuctionLot, Artwork, ArtImage, Artist)
+
+dstrs = ["22 September 2020",
+         "21–30 September 2020",
+         "28 August–9 September 2020",
+         "23 November 2018–25 January 2019"]
 
 DEPARTMENTS = [
     ("Contemporary Art", "00000164-609b-d1db-a5e6-e9ff01230000"),
@@ -62,10 +76,74 @@ DEPARTMENTS = [
 ]
 
 BASE_URL = "https://www.sothebys.com/en/results"
+UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0"
+MDASH = "–"
 def build_url():
     return "?".join([BASE_URL,
                      "&".join(["from=",
                                "to="] + [f"f2={d[1]}" for d in DEPARTMENTS])])
-                               
+
+def parse_date(dstr):
+    sp = dstr.split(MDASH)
+    if len(sp) == 1:
+        # only one date
+        start_date = parse(sp[0])
+        end_date = start_date
+        
+    elif sp[0].isdigit():
+        # two days, same month and year
+        start_day = int(sp[0])
+        end_date = parse(sp[1])
+        start_date = datetime.date(year=end_date.year,
+                                   month=end_date.month,
+                                   day=start_day)
+    elif re.match(r'\d{4}$', sp[0]):
+        # different day, month, and year
+        start_date = parse(sp[0])
+        end_date = parse(sp[1])
+    else:
+        # different day and month, same year
+        end_date = parse(sp[1])
+        start_date = parse(f"{sp[0]} {end_date.year}")
+    return start_date, end_date
+    
+def auction_data(card):
+    """Extract auction data from card div"""
+    url = card.a["href"]
+    title = card.find_all("div", class_="Card-title")[0].text
+    details = card.find_all("div", class_="Card-details")[0].text
+    dstr = details.split(" | ")[0]
+    start_date, end_date = parse_date(dstr)
+    city = details.split(" | ")[-1]
+    return {"title": title,
+            "url": url,
+            "start_date": start_date,
+            "end_date": end_date,
+            "city": city}
+    
 def get_auctions():
-    page = 1
+    """Visit all auction listing pages and save auction info"""
+    url = build_url()
+    for page in range(1, 209):
+        res = requests.get(url + f"&p={page}", headers={"User-Agent": UA})
+        soup = BeautifulSoup(res.content, features="html.parser")
+        cards = soup.find_all("div", class_="Card data-type-auction")
+        for card in cards:
+            data = auction_data(card)
+            defaults={"title": data["title"],
+                      "start_date": data["start_date"],
+                      "end_date": data["end_date"],
+                      "city": data["city"]}
+            auction, created = Auction.objects.get_or_create(url=data["url"],
+                                                             defaults=defaults)
+
+            if not auction.city and not created:
+                auction.city = data["city"]
+                auction.save()
+                print(f"updated city {auction.title}")
+
+        time.sleep(15)
+            
+            
+def get_lots(auction):
+    pass

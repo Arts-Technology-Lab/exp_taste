@@ -5,10 +5,12 @@ class Auction(models.Model):
     start_date = models.DateField("Start Date")
     end_date = models.DateField("End Date")
     collected = models.BooleanField("Artworks collected", default=False)
-    url = models.URLField("URL", unique=True)
+    url = models.URLField("URL", unique=True, max_length=2000)
+    city = models.CharField("City", max_length=200, default="")
 
     class Meta:
         db_table = "auctions"
+        ordering = ["-end_date", "id"]
 
     def __str__(self):
         return self.title[:20]
@@ -37,6 +39,7 @@ class AuctionLot(models.Model):
                                         default="")
     provenance = models.TextField("Provenance",
                                   default="")
+    url = modesl.URLField("URL", unique=True, max_length=2000)
 
     class Meta:
         db_table = "auction_lots"
