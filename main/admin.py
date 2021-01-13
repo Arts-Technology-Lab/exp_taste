@@ -4,13 +4,19 @@ from main.models import Auction, AuctionLot, Artwork, ArtImage, Artist
 @admin.register(Auction)
 class AuctionAdmin(admin.ModelAdmin):
     list_display = ("title", "start_date", "end_date", "city")
-    list_filter=("start_date",)
+    list_filter=("start_date", "collected")
     search_fields = ("title",)
-    
+
+
+def lot_auction_title(obj):
+    return obj.auction.title
+lot_auction_title.short_description = "Auction Title"
 
 @admin.register(AuctionLot)
 class AuctionLotAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ("auction__title",)
+    list_display = (lot_auction_title, "lot_number")
+    list_display_links = (lot_auction_title, "lot_number")
 
 @admin.register(Artwork)
 class ArtworkAdmin(admin.ModelAdmin):

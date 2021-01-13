@@ -19,15 +19,23 @@ class Auction(models.Model):
 class AuctionLot(models.Model):
     lot_number = models.IntegerField("Lot Number")
     artwork = models.ForeignKey("Artwork",
-                                on_delete=models.CASCADE)
+                                on_delete=models.CASCADE,
+                                null=True,
+                                blank=True)
     auction = models.ForeignKey("Auction",
                                 on_delete=models.CASCADE)
-    estimate_low = models.IntegerField("Estimate Low Value")
-    estimate_high = models.IntegerField("Estimate High Value")
+    estimate_low = models.IntegerField("Estimate Low Value",
+                                       null=True,
+                                       blank=True)
+    estimate_high = models.IntegerField("Estimate High Value",
+                                        null=True,
+                                        blank=True)
     estimate_currency = models.CharField("Estimate Currency",
                                          max_length=3,
                                          default="USD")
-    sale_price = models.IntegerField("Sale Price")
+    sale_price = models.IntegerField("Sale Price",
+                                     null=True,
+                                     blank=True)
     sale_currency = models.CharField("Sale Currency",
                                      max_length=3,
                                      default="USD")
@@ -39,15 +47,17 @@ class AuctionLot(models.Model):
                                         default="")
     provenance = models.TextField("Provenance",
                                   default="")
-    url = modesl.URLField("URL", unique=True, max_length=2000)
+    url = models.URLField("URL", max_length=2000, default="")
+    visited = models.BooleanField("Visited", default=False)
 
     class Meta:
         db_table = "auction_lots"
         verbose_name = "Auction Lot"
         verbose_name_plural = "Auction Lots"
+        ordering = ["auction__id", "lot_number"]
 
     def __str__(self):
-        return f"{self.auction} Lot {self.lot_number}"
+        return f"Lot {self.lot_number} - {self.auction}"
 
     
 class Artwork(models.Model):

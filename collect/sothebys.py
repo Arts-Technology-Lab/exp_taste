@@ -6,6 +6,7 @@ import requests
 from django.db import IntegrityError
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
+from selenium.webdriver import Firefox
 
 from main.models import (Auction, AuctionLot, Artwork, ArtImage, Artist)
 
@@ -144,6 +145,85 @@ def get_auctions():
 
         time.sleep(15)
             
-            
-def get_lots(auction):
+
+def scroll_to_end(driver):
+    # adapted from:
+    # https://stackoverflow.com/questions/63647849/scroll-to-the-end-of-the-infinite-loading-page-using-selenium-python
+    # Get scroll height after first time page load
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    while True:
+        # Scroll down to bottom
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # Wait to load page
+        time.sleep(2)
+        # Calculate new scroll height and compare with last scroll height
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            try:
+                lm = driver.find_element_by_css_selector("p.css-1oie00y")
+                lm.click()
+            except:
+                break
+        last_height = new_height
+
+class LotParseException(Exception):
     pass
+
+def create_lot(lot_div, auction):
+    title = lot_div.find_element_by_css_selector("h3.css-1i601rm-h3-regular")
+    m = re.match(r'^\d+', title.text)
+    lot_number = None
+    if m:
+        lot_number = int(m.group())
+    if not lot_number:
+        raise LotParseException(f"Error parsing: {lot_div.text}")
+    
+    h4s = lot_div.find_elements_by_css_selector("h4.css-xnoh5a")
+    low, high, currency = None, None, None
+    for h4 in h4s:
+        m = re.match(r'([\d,\.]+) - ([\d,\.]+) ([A-Z]{3})', h4.text)
+        if m:
+            low, high, currency = m.groups()
+            low = int(re.sub(r'[,\.]', '', low))
+            high = int(re.sub(r'[,\.]', '', high))
+    try:
+        # link = lot_div.find_element_by_css_selector("a.css-1um49bp")
+        link = lot_div.find_element_by_css_selector("div > a")
+    except:
+        raise LotParseException(f"Could not find link at {lot_div.text}")
+    possible_price = lot_div.find_elements_by_css_selector("span.css-8fe5tn-label-bold")
+    sale_price, sale_currency = None, None
+    for p in possible_price:
+        m = re.match(r'([\d,\.]+) ([A-Z]{3})', p.text)
+        if m:
+            sale_price, sale_currency = m.groups()
+            sale_price = int(re.sub(r'[,\.]', '', sale_price))
+
+    lot = AuctionLot(lot_number=lot_number,
+                     url = link.get_attribute("href"),
+                     auction=auction)
+    if sale_price and sale_currency:
+        lot.sale_price = sale_price
+        lot.sale_currency = sale_currency
+    if all([low, high, currency]):
+        lot.estimate_low = low
+        lot.estimate_high = high
+        lot.estimate_currency = currency
+    return lot
+        
+def save_lots(auction):
+
+    with Firefox() as driver:
+        driver.get(auction.url)
+        scroll_to_end(driver)
+        lot_divs = driver.find_elements_by_css_selector("div.css-1up9enl")
+        lots = [create_lot(div, auction) for div in lot_divs]
+    AuctionLot.objects.bulk_create(lots)
+    auction.collected = True
+    auction.save()
+        
+def collect_lots():
+    uncollected = Auction.objects.filter(collected=False)
+    for auction in uncollected:
+        save_lots(auction)
+        time.sleep(15)
