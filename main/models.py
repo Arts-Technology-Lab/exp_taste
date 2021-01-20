@@ -1,10 +1,12 @@
 from django.db import models
+from django.utils.text import slugify
 
 class Auction(models.Model):
     title = models.CharField("Title", max_length=255)
     start_date = models.DateField("Start Date")
     end_date = models.DateField("End Date")
     collected = models.BooleanField("Artworks collected", default=False)
+    attempted = models.BooleanField("Collection attempted", default=False)
     url = models.URLField("URL", unique=True, max_length=2000)
     city = models.CharField("City", max_length=200, default="")
 
@@ -17,7 +19,9 @@ class Auction(models.Model):
 
 
 class AuctionLot(models.Model):
-    lot_number = models.IntegerField("Lot Number")
+    lot_number = models.CharField("Lot Number", 
+                                  default="",
+                                  max_length=20)
     artwork = models.ForeignKey("Artwork",
                                 on_delete=models.CASCADE,
                                 null=True,
@@ -62,6 +66,10 @@ class AuctionLot(models.Model):
     
 class Artwork(models.Model):
     title = models.CharField("Title", max_length=255)
+    title_slug = models.SlugField("Title Slug", 
+                                  max_length=255, 
+                                  editable=False,
+                                  default="")
     artist = models.ForeignKey("Artist",
                                on_delete=models.SET_NULL,
                                null=True,
@@ -79,14 +87,19 @@ class Artwork(models.Model):
         verbose_name_plural = "Art Works"
         db_table = "artworks"
 
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        self.title_slug = slugify(self.title)
+        return super().save(*args, **kwargs)
+
 
 class ArtImage(models.Model):
     image = models.ImageField()
     artwork = models.ForeignKey("Artwork",
                                 on_delete=models.CASCADE)
     featured = models.BooleanField("Featured Photo", default=False)
-
-
 
     class Meta:
         verbose_name = "Art Image"
@@ -99,6 +112,10 @@ class ArtImage(models.Model):
 
 class Artist(models.Model):
     name = models.CharField("Name", max_length=255)
+    name_slug = models.SlugField("Name Slug", 
+                                 max_length=255, 
+                                 editable=False,
+                                 default="")
     birth_year = models.IntegerField("Born",
                                      null=True,
                                      blank=True)
@@ -108,6 +125,10 @@ class Artist(models.Model):
 
     class Meta:
         db_table = "artists"
+
+    def save(self, *args, **kwargs):
+        self.name_slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name[:30]

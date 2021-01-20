@@ -170,60 +170,100 @@ class LotParseException(Exception):
     pass
 
 def create_lot(lot_div, auction):
-    title = lot_div.find_element_by_css_selector("h3.css-1i601rm-h3-regular")
-    m = re.match(r'^\d+', title.text)
+    """
+    Parse first type of lot listing page
+    """
+    txt = lot_div.text.upper().split("\n")
+    if not txt:
+        raise LotParseException(f"No text: {lot_div.text}")
+    m = re.match(r'^[A-Za-z0-9]+', txt[0])
     lot_number = None
     if m:
-        lot_number = int(m.group())
+        lot_number = m.group()
     if not lot_number:
-        raise LotParseException(f"Error parsing: {lot_div.text}")
-    
-    h4s = lot_div.find_elements_by_css_selector("h4.css-xnoh5a")
-    low, high, currency = None, None, None
-    for h4 in h4s:
-        m = re.match(r'([\d,\.]+) - ([\d,\.]+) ([A-Z]{3})', h4.text)
-        if m:
-            low, high, currency = m.groups()
-            low = int(re.sub(r'[,\.]', '', low))
-            high = int(re.sub(r'[,\.]', '', high))
+        raise LotParseException(f"Could not find lot number: {lot_div.text}")
+
     try:
-        # link = lot_div.find_element_by_css_selector("a.css-1um49bp")
-        link = lot_div.find_element_by_css_selector("div > a")
+        link = lot_div.find_element_by_css_selector("[href]")
     except:
         raise LotParseException(f"Could not find link at {lot_div.text}")
-    possible_price = lot_div.find_elements_by_css_selector("span.css-8fe5tn-label-bold")
-    sale_price, sale_currency = None, None
-    for p in possible_price:
-        m = re.match(r'([\d,\.]+) ([A-Z]{3})', p.text)
-        if m:
-            sale_price, sale_currency = m.groups()
-            sale_price = int(re.sub(r'[,\.]', '', sale_price))
 
     lot = AuctionLot(lot_number=lot_number,
                      url = link.get_attribute("href"),
-                     auction=auction)
-    if sale_price and sale_currency:
-        lot.sale_price = sale_price
-        lot.sale_currency = sale_currency
-    if all([low, high, currency]):
-        lot.estimate_low = low
-        lot.estimate_high = high
-        lot.estimate_currency = currency
+                     auction=auction)        
+    
+    if "ESTIMATE: " in txt:
+        est = txt[txt.index("ESTIMATE: ") + 1]
+        low, high, currency = None, None, None
+        m = re.match(r'([\d,\.]+) - ([\d,\.]+) ([A-Z]{3})', est)
+        if m:
+            low, high, currency = m.groups()
+            lot.estimate_low = int(re.sub(r'[,\.]', '', low))
+            lot.estimate_high = int(re.sub(r'[,\.]', '', high))
+            lot.estimate_currency = currency
+
+    if "LOT SOLD: " in txt:
+        sale = txt[txt.index("LOT SOLD: ") + 1]
+        sale_price, sale_currency = None, None
+        m = re.match(r'([\d,\.]+) ([A-Z]{3})', sale)
+        if m:
+            sale_price, sale_currency = m.groups()
+            lot.sale_price = int(re.sub(r'[,\.]', '', sale_price))
+            lot.sale_currency = sale_currency
+    return lot
+
+def create_lot2(article, auction):
+    """
+    Parse second type of lot listing page
+    """
+    lot_num = article.get_attribute("data-lot")
+    lot_url = (article
+               .find_elements_by_css_selector("div.details h4 a")[0]
+               .get_attribute("href"))
+    lot = AuctionLot(lot_number=lot_num,
+                     url=lot_url,
+                     auction=auction)  
+    from_elem = article.find_elements_by_css_selector("[data-range-from]")
+    if from_elem:
+        lot.estimate_low = int(from_elem[0].get_attribute("data-range-from"))
+
+    to_elem = article.find_elements_by_css_selector("[data-range-to]")
+    if to_elem:
+        lot.estimate_high = int(to_elem[0].get_attribute("data-range-to"))
+
+    curr_elem = article.find_elements_by_css_selector("div.currency-dropdown a")
+    if curr_elem:
+        lot.estimate_currency = curr_elem[0].text
+    
+    sale_elem = article.find_elements_by_css_selector("[data-lot-sold]")
+    if sale_elem:
+        lot.sale_price = int(sale_elem[0].get_attribute("data-lot-sold"))
+        lot.sale_currency = lot.estimate_currency
+    
     return lot
         
 def save_lots(auction):
-
+    auction.attempted = True
     with Firefox() as driver:
+        print(f"Getting {auction.url}")
         driver.get(auction.url)
         scroll_to_end(driver)
         lot_divs = driver.find_elements_by_css_selector("div.css-1up9enl")
-        lots = [create_lot(div, auction) for div in lot_divs]
-    AuctionLot.objects.bulk_create(lots)
-    auction.collected = True
+        if lot_divs:
+            lots = [create_lot(div, auction) for div in lot_divs]
+        else:
+            lot_divs = driver.find_elements_by_css_selector("article.sale-article")
+            lots = [create_lot2(div, auction) for div in lot_divs]
+    if len(lots) > 0:
+        print(f"Saving {len(lots)} lots for {auction.title}")
+        AuctionLot.objects.bulk_create(lots)
+        auction.collected = True
+    else:
+        print("Could not find lots")
     auction.save()
         
 def collect_lots():
-    uncollected = Auction.objects.filter(collected=False)
-    for auction in uncollected:
+    unattempted = Auction.objects.filter(attempted=False)
+    for auction in unattempted:
         save_lots(auction)
         time.sleep(15)

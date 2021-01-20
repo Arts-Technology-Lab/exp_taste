@@ -1,0 +1,15 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.pythonPath": "/usr/local/src/env/exp_taste/bin/python",
+    "cSpell.ignoreWords": [
+        "a",
+        "curr",
+        "divs",
+        "dstr",
+        "dstrs",
+        "elem",
+        "lot",
+        "mdash",
+        "xnoh"
+    ]
+}
