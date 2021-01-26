@@ -1,5 +1,22 @@
 from django.db import models
 from django.utils.text import slugify
+# $1 USD in other currencies
+TO_USD = {
+    "EUR": 0.82,
+    "SGD": 1.33,
+    "AUD": 1.3,
+    "USD": 1.0,
+    "RMB": 6.48,
+    "INR": 73.0,
+    "GBP": 0.73,
+    "CHF": 0.89,
+    "HKD": 7.75,
+    "CAD": 1.27
+}
+
+def convert_usd(amount, currency):
+    res = amount / TO_USD.get(currency)
+    return int(res)
 
 class Auction(models.Model):
     title = models.CharField("Title", max_length=255)
@@ -22,6 +39,11 @@ class AuctionLot(models.Model):
     lot_number = models.CharField("Lot Number", 
                                   default="",
                                   max_length=20)
+    title = models.CharField("Title", 
+                             max_length=1000, 
+                             default="")                                  
+    description = models.TextField("Description",
+                                   default="")                             
     artwork = models.ForeignKey("Artwork",
                                 on_delete=models.CASCADE,
                                 null=True,
@@ -43,16 +65,22 @@ class AuctionLot(models.Model):
     sale_currency = models.CharField("Sale Currency",
                                      max_length=3,
                                      default="USD")
+    sale_price_usd = models.IntegerField("Sale Price in USD",
+                                         null=True,
+                                         blank=True) 
     number_of_bids = models.IntegerField("Number of Bids",
                                          default=1)
     reserve_met = models.BooleanField("Reserve Met",
-                                      default=True)
+                                      default=False)
     condition_report = models.TextField("Condition Report",
-                                        default="")
+                                        default="",
+                                        blank=True)
     provenance = models.TextField("Provenance",
-                                  default="")
+                                  default="", 
+                                  blank=True)
     url = models.URLField("URL", max_length=2000, default="")
     visited = models.BooleanField("Visited", default=False)
+    collected = models.BooleanField("Collected", default=False)
 
     class Meta:
         db_table = "auction_lots"
@@ -62,6 +90,12 @@ class AuctionLot(models.Model):
 
     def __str__(self):
         return f"Lot {self.lot_number} - {self.auction}"
+
+    def save(self, *args, **kwargs):
+        if self.sale_currency in TO_USD:
+            self.sale_price_usd = convert_usd(self.sale_price, 
+                                              self.sale_currency)
+        return super().save(*args, **kwargs)
 
     
 class Artwork(models.Model):
@@ -93,6 +127,25 @@ class Artwork(models.Model):
     def save(self, *args, **kwargs):
         self.title_slug = slugify(self.title)
         return super().save(*args, **kwargs)
+
+
+def lot_image_path(instance, filename):
+    return (f"auctions/{instance.lot.auction.id}/"
+            f"lots/{instance.lot.id}/{filename}")
+
+class LotImage(models.Model):
+    image = models.ImageField(upload_to=lot_image_path)
+    lot = models.ForeignKey("AuctionLot",
+                            on_delete=models.CASCADE)
+    source = models.URLField("Source URL", default="")
+
+    class Meta:
+        verbose_name = "Lot Image"
+        verbose_name_plural = "Lot Images"
+        db_table = "lot_images"
+    
+    def __str__(self):
+        return self.image.file.name
 
 
 class ArtImage(models.Model):

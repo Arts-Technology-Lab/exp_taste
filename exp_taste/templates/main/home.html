@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Select the piece that sold for more at auction</h2>
+<div class="answer">
+</div>
+<div class="row">
+    <div id="lot_a" data-sale-usd="{{ lot_a.sale_price_usd }}" class="col">
+        <h3>{{ lot_a.title }}</h3>
+        <img src="{{ lot_a_img.image.url }}" width="400px" />
+        <h4>Description</h4>
+        <p>{{ lot_a.description|linebreaksbr }}</p>
+    </div>
+    <div id="lot_b" data-sale-usd="{{ lot_b.sale_price_usd }}" class="col">
+        <h3>{{ lot_b.title }}</h3>
+        <img src="{{ lot_b_img.image.url }}" width="400px" />
+        <h4>Description</h4>
+        <p>{{ lot_b.description|linebreaksbr }}</p>
+    </div>
+</div>
+{% endblock content %}

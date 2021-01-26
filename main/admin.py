@@ -1,5 +1,6 @@
 from django.contrib import admin
-from main.models import Auction, AuctionLot, Artwork, ArtImage, Artist
+from main.models import (Auction, AuctionLot, Artwork, ArtImage, Artist, 
+                         LotImage)
 
 @admin.register(Auction)
 class AuctionAdmin(admin.ModelAdmin):
@@ -7,6 +8,8 @@ class AuctionAdmin(admin.ModelAdmin):
     list_filter=("start_date", "collected")
     search_fields = ("title",)
 
+class LotImageInline(admin.TabularInline):
+    model = LotImage
 
 def lot_auction_title(obj):
     return obj.auction.title
@@ -14,9 +17,12 @@ lot_auction_title.short_description = "Auction Title"
 
 @admin.register(AuctionLot)
 class AuctionLotAdmin(admin.ModelAdmin):
-    search_fields = ("auction__title",)
-    list_display = (lot_auction_title, "lot_number")
-    list_display_links = (lot_auction_title, "lot_number")
+    search_fields = ("auction__title", "title", "id")
+    list_display = (lot_auction_title, "lot_number", "title")
+    list_display_links = (lot_auction_title, "lot_number", "title")
+    list_filter = ("visited", "collected")
+    inlines = [LotImageInline]
+
 
 @admin.register(Artwork)
 class ArtworkAdmin(admin.ModelAdmin):
