@@ -1,19 +1,29 @@
 import datetime
+import json
 import re
 import time
 
 import requests
-from django.db import IntegrityError
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils.text import slugify
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 from selenium.webdriver import Firefox
 
-from main.models import (Auction, AuctionLot, Artwork, ArtImage, Artist)
+from main.models import (Auction, AuctionLot, LotImage)
 
 dstrs = ["22 September 2020",
          "21–30 September 2020",
          "28 August–9 September 2020",
          "23 November 2018–25 January 2019"]
+# HEADERS = {
+#     "User-Agent": "Expensive Taste Crawler - admin@expensivetaste.art"
+# }         
+
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Safari/605.1.15"
+}
 
 DEPARTMENTS = [
     ("Contemporary Art", "00000164-609b-d1db-a5e6-e9ff01230000"),
@@ -267,3 +277,128 @@ def collect_lots():
     for auction in unattempted:
         save_lots(auction)
         time.sleep(15)
+
+def get_image_url(soup):
+    try:
+        url = soup.find("meta", attrs={"property": "og:image"}).attrs["content"]
+    except:
+        try: 
+            url = soup.find("img", class_="main-image").attrs["src"]
+            url = f"https://sothebys.com{url}"
+        except:
+            raise LotParseError("Couldn't find image url")
+    return url
+
+
+def save_image(soup, lot):
+    url = get_image_url(soup)
+    print(f"fetching image from {url}")
+    lot_img = LotImage(source=url,
+                       lot=lot)
+    r = requests.get(url, headers=HEADERS)
+    ct = r.headers.get("Content-Type", "")
+    if ct != "image/jpeg":
+        raise LotParseError("Unknown image type")
+    cf = ContentFile(r.content)
+    filename = f"{slugify(lot.title)}.jpg"
+    lot_img.image = InMemoryUploadedFile(cf,
+                                         None,
+                                         filename,
+                                         "image/jpeg",
+                                         cf.tell,
+                                         None)
+    lot_img.save()                                         
+
+class LotParseError(Exception):
+    pass
+
+def lot_from_json(soup):
+    """
+    Use the ld+json meta data to extract lot details from the page
+    """
+    ld_json = soup.find_all(type="application/ld+json")
+    if not ld_json:
+        raise LotParseError("No ld+json data on page")
+    data = json.loads(ld_json[0].contents[0])
+    data = data[0]
+    item = data["mainEntity"]["offers"]["itemOffered"][0]
+    description = item["description"]
+    title = item["name"]
+    condition_report = item["itemCondition"]
+    return {"description": description,
+            "title": title,
+            "condition_report": condition_report}
+
+    
+def lot_from_meta(soup):
+    d_meta = (soup
+              .find("meta", 
+                    attrs={"property": "og:description"}))
+    if d_meta:
+        description = d_meta.attrs["content"]
+    else:
+        raise LotParseError("No Meta Info")
+    title = (soup
+             .find("meta",
+                   attrs={"property": "og:title"}))
+    title = " | ".join(title.split(" | ")[:2])
+    return {"description": description,
+            "title": title}
+
+def lot_from_html(soup):
+    d_div = soup.find("div", class_="lotdetail-description-text")
+    if d_div:
+        description = "\n".join(d_div.stripped_strings)
+    else:
+        raise LotParseError("Couldn't find info in html")
+
+    a_div = soup.find("div", class_="lotdetail-guarantee")
+    w_div = soup.find("div", class_="lotdetail-subtitle")
+    if not (a_div and w_div):
+        raise LotParseError("Couldn't generate title")
+    title = f"{a_div.text} | {w_div.text}"
+    res = {"description": description,
+           "title": title}
+    return res            
+
+def parse_lot_detail(lot):
+    print(f"Parsing {lot.url}")
+    r = requests.get(lot.url, headers=HEADERS)
+    soup = BeautifulSoup(r.content, "html.parser")
+    try:
+        print("Parsing data from ld+json")
+        res = lot_from_json(soup)
+    except LotParseError:
+        try:
+            print("ld+json failed, parsing data from meta tags")
+            res = lot_from_meta(soup)
+        except LotParseError:
+            print("No meta tag info, parsing from html")
+            res = lot_from_html(soup)
+    if res:
+        for attr, val in res.items():
+            setattr(lot, attr, val)
+    else:
+        raise LotParseError("Could not find attributes in page")
+    save_image(soup, lot)
+    lot.collected = True
+    lot.save()
+
+def parse_lots():
+    to_parse = AuctionLot.objects.filter(visited=False, 
+                                         collected=False,
+                                         sale_price__isnull=False)
+    for lot in to_parse:
+        try: 
+            parse_lot_detail(lot)
+            lot.collected = True
+        except LotParseError as e:
+            print(f"Parse failed - {e}")
+            continue
+        finally:
+            lot.visited=True
+            lot.save()
+            time.sleep(5)
+
+
+        
