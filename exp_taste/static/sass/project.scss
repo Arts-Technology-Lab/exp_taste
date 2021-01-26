@@ -1,11 +1,53 @@
 
 @import "custom_bootstrap_vars";
 @import "bootstrap";
-
-
-
-
 // project specific CSS goes here
+
+.correct {
+  border: solid 10px $success;
+  border-radius: 10px;
+}
+
+.incorrect {
+  border: solid 10px $danger;
+  border-radius: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+
+.lot_container {
+  cursor: pointer;
+}
+
+#result {
+  font-size: 3em;
+}
+
+#main {
+  min-height: calc(-96px + 100vh);
+}
+
+footer {
+  height: 40px;
+  line-height: 40px;
+}
+
+footer > .container {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.price {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+a {
+  cursor: pointer;
+}
 
 ////////////////////////////////
 		//Variables//

@@ -23,6 +23,7 @@ class Home(TemplateView):
                           .filter(collected=True, sale_price__isnull=False,
                                  auction__end_date__year__gte=min_year,
                                  auction__end_date__year__lte=max_year)
+                          .exclude(id=a.id)
                           .annotate(img_count=Count("lotimage"))
                           .filter(img_count__gt=0))
         context["lot_a"] = a

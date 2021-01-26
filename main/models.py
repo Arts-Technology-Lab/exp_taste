@@ -14,6 +14,21 @@ TO_USD = {
     "CAD": 1.27
 }
 
+CURRENCY_SYMBOLS = {
+    "EUR": "€",
+    "SGD": "S$",
+    "AUD": "$",
+    "USD": "$",
+    "RMB": "CN¥",
+    "INR": "₨",
+    "GBP": "£",
+    "CHF": "Fr",
+    "HKD": "$",
+    "CAD": "$"
+}
+
+
+
 def convert_usd(amount, currency):
     res = amount / TO_USD.get(currency)
     return int(res)
@@ -81,6 +96,11 @@ class AuctionLot(models.Model):
     url = models.URLField("URL", max_length=2000, default="")
     visited = models.BooleanField("Visited", default=False)
     collected = models.BooleanField("Collected", default=False)
+
+    @property
+    def currency_symbol(self):
+        currency = self.sale_currency or self.estimate_currency
+        return CURRENCY_SYMBOLS.get(currency, "$")
 
     class Meta:
         db_table = "auction_lots"
