@@ -1,12 +1,13 @@
 from django.contrib import admin
 from main.models import (Auction, AuctionLot, Artwork, ArtImage, Artist, 
-                         LotImage)
+                         LotImage, Category)
 
 @admin.register(Auction)
 class AuctionAdmin(admin.ModelAdmin):
-    list_display = ("title", "start_date", "end_date", "city")
-    list_filter=("start_date", "collected")
+    list_display = ("title", "end_date", "category")
+    list_filter=("end_date", "collected", "category")
     search_fields = ("title",)
+    list_editable = ("category",)
 
 class LotImageInline(admin.TabularInline):
     model = LotImage
@@ -23,7 +24,6 @@ class AuctionLotAdmin(admin.ModelAdmin):
     list_filter = ("visited", "collected")
     inlines = [LotImageInline]
 
-
 @admin.register(Artwork)
 class ArtworkAdmin(admin.ModelAdmin):
     pass
@@ -35,3 +35,11 @@ class ArtworkImageAdmin(admin.ModelAdmin):
 @admin.register(Artist)
 class ArtistAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    list_display_links = ("name",)
+    search_fields = ("name",)
+    readonly_fields = ("name_slug", )
+    

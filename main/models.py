@@ -27,20 +27,42 @@ CURRENCY_SYMBOLS = {
     "CAD": "$"
 }
 
-
-
 def convert_usd(amount, currency):
     res = amount / TO_USD.get(currency)
     return int(res)
 
+class Category(models.Model):
+    name = models.CharField("Name", max_length=100)
+    name_slug = models.SlugField("Name Slug", 
+                                 max_length=100,
+                                 unique=True)
+    
+    class Meta:
+        db_table = "categories"
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.name_slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
+
 class Auction(models.Model):
     title = models.CharField("Title", max_length=255)
+    category = models.ForeignKey(Category,
+                                 null=True,
+                                 blank=True,
+                                 on_delete=models.SET_NULL)
     start_date = models.DateField("Start Date")
     end_date = models.DateField("End Date")
     collected = models.BooleanField("Artworks collected", default=False)
     attempted = models.BooleanField("Collection attempted", default=False)
     url = models.URLField("URL", unique=True, max_length=2000)
     city = models.CharField("City", max_length=200, default="")
+    
 
     class Meta:
         db_table = "auctions"
