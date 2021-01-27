@@ -9,7 +9,8 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", 
                          default=["expensivetaste.art",
                                   "www.expensivetaste.art",
-                                  "localhost"])
+                                  "localhost",
+                                  "exptaste"])
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -129,7 +130,11 @@ INSTALLED_APPS += ["anymail"]  # noqa F405
 # https://anymail.readthedocs.io/en/stable/installation/#anymail-settings-reference
 # https://anymail.readthedocs.io/en/stable/esps/amazon_ses/
 EMAIL_BACKEND = "anymail.backends.amazon_ses.EmailBackend"
-ANYMAIL = {}
+ANYMAIL = {
+    "AMAZON_SES_CLIENT_PARAMS": {
+        "region_name": "us-east-1"
+    }
+}
 
 # Collectfast
 # ------------------------------------------------------------------------------
