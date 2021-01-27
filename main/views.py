@@ -13,9 +13,8 @@ class Home(TemplateView):
         context = super().get_context_data(**kwargs)
         a = random.choice(AuctionLot
                           .objects
-                          .filter(collected=True, sale_price__isnull=False)
-                          .annotate(img_count=Count("lotimage"))
-                          .filter(img_count__gt=0))
+                          .filter(collected=True, sale_price__isnull=False))
+                          
         min_year = a.auction.end_date.year - 1
         max_year = a.auction.end_date.year + 1
         b = random.choice(AuctionLot
@@ -23,9 +22,7 @@ class Home(TemplateView):
                           .filter(collected=True, sale_price__isnull=False,
                                  auction__end_date__year__gte=min_year,
                                  auction__end_date__year__lte=max_year)
-                          .exclude(id=a.id)
-                          .annotate(img_count=Count("lotimage"))
-                          .filter(img_count__gt=0))
+                          .exclude(id=a.id))
         context["lot_a"] = a
         context["lot_a_img"] = a.lotimage_set.all()[0]
         context["lot_b"] = b
