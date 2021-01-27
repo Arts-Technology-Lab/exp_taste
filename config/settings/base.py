@@ -41,9 +41,21 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
+# DATABASES = {
+#     "default": env.db("DATABASE_URL", default="postgres:///exp_taste_db")
+# }
+
 DATABASES = {
-    "default": env.db("DATABASE_URL", default="postgres:///exp_taste_db")
+	"default": {
+		"ENGINE": "django.db.backends.postgresql_psycopg2",
+		"NAME": "exp_taste_db",
+		"USER": "exp_taste_user",
+		"PASSWORD": env("exp_taste_DB_PW"), # store in environment variable
+		"HOST": env("DB_HOST", default="localhost"),
+		"PORT": "",                      # Set to empty string for default.
+	}
 }
+
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 # URLS

@@ -1,3 +1,5 @@
+import PIL
+
 from django.db import models
 from django.utils.text import slugify
 # $1 USD in other currencies
@@ -188,6 +190,15 @@ class LotImage(models.Model):
     
     def __str__(self):
         return self.image.file.name
+
+    def resize(self):
+        img = PIL.Image.open(self.image.path)
+        basewidth = 400
+        if img.size[0] <= basewidth:
+            return
+        height = int(img.size[1] * basewidth / img.size[0])
+        resized = img.resize((basewidth, height), PIL.Image.ANTIALIAS)
+        resized.save(fp=self.image.path, format="JPEG")
 
 
 class ArtImage(models.Model):

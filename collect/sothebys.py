@@ -1,9 +1,14 @@
 import datetime
 import json
 import re
+import pathlib
 import time
 
+from io import BytesIO
+
 import requests
+import PIL
+
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils.text import slugify
@@ -399,6 +404,3 @@ def parse_lots():
             lot.visited=True
             lot.save()
             time.sleep(5)
-
-
-        
