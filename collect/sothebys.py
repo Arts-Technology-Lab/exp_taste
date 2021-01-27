@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 import re
 import pathlib
 import time
@@ -22,13 +23,12 @@ dstrs = ["22 September 2020",
          "21–30 September 2020",
          "28 August–9 September 2020",
          "23 November 2018–25 January 2019"]
-# HEADERS = {
-#     "User-Agent": "Expensive Taste Crawler - admin@expensivetaste.art"
-# }         
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Safari/605.1.15"
 }
+
+TMP_DIR = pathlib.Path("/tmp")
 
 DEPARTMENTS = [
     ("Contemporary Art", "00000164-609b-d1db-a5e6-e9ff01230000"),
@@ -283,6 +283,9 @@ def collect_lots():
         save_lots(auction)
         time.sleep(15)
 
+class LotParseError(Exception):
+    pass        
+
 def get_image_url(soup):
     try:
         url = soup.find("meta", attrs={"property": "og:image"}).attrs["content"]
@@ -297,25 +300,36 @@ def get_image_url(soup):
 
 def save_image(soup, lot):
     url = get_image_url(soup)
+    filename = f"{slugify(lot.title)}.jpg"
     print(f"fetching image from {url}")
     lot_img = LotImage(source=url,
                        lot=lot)
     r = requests.get(url, headers=HEADERS)
-    ct = r.headers.get("Content-Type", "")
-    if ct != "image/jpeg":
-        raise LotParseError("Unknown image type")
-    cf = ContentFile(r.content)
-    filename = f"{slugify(lot.title)}.jpg"
-    lot_img.image = InMemoryUploadedFile(cf,
-                                         None,
-                                         filename,
-                                         "image/jpeg",
-                                         cf.tell,
-                                         None)
-    lot_img.save()                                         
-
-class LotParseError(Exception):
-    pass
+    if r.headers["Content-Type"] != "image/jpeg":
+        raise LotParseError("Image not JPEG")
+    with open(TMP_DIR / filename, "wb") as tmpfile:
+        tmpfile.write(r.content)
+        
+    with open(TMP_DIR / filename, "rb") as tmpfile:
+        im = PIL.Image.open(tmpfile)
+        buffer = BytesIO()
+        basewidth = 400
+        if im.size[0] <= 400:
+            im.save(fp=buffer, format="JPEG")
+        else:
+            height = int(im.size[1] * basewidth / im.size[0])
+            resized = im.resize((basewidth, height), PIL.Image.ANTIALIAS)
+            resized.save(fp=buffer, format="JPEG")
+        cf = ContentFile(buffer.getvalue())
+        
+        lot_img.image = InMemoryUploadedFile(cf,
+                                            None,
+                                            filename,
+                                            "image/jpeg",
+                                            cf.tell,
+                                            None)
+        lot_img.save()
+    os.remove(TMP_DIR / filename)
 
 def lot_from_json(soup):
     """
