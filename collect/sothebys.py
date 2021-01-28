@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import random
 import re
 import pathlib
 import time
@@ -309,7 +310,7 @@ def save_image(soup, lot):
         raise LotParseError("Image not JPEG")
     with open(TMP_DIR / filename, "wb") as tmpfile:
         tmpfile.write(r.content)
-        
+
     with open(TMP_DIR / filename, "rb") as tmpfile:
         im = PIL.Image.open(tmpfile)
         buffer = BytesIO()
@@ -328,7 +329,7 @@ def save_image(soup, lot):
                                             "image/jpeg",
                                             cf.tell,
                                             None)
-        lot_img.save()
+        lot_img.save(using="prod")
     os.remove(TMP_DIR / filename)
 
 def lot_from_json(soup):
@@ -399,22 +400,25 @@ def parse_lot_detail(lot):
             setattr(lot, attr, val)
     else:
         raise LotParseError("Could not find attributes in page")
+    time.sleep(random.randint(1,3))
     save_image(soup, lot)
     lot.collected = True
-    lot.save()
+    lot.save(using="prod")
 
 def parse_lots():
-    to_parse = AuctionLot.objects.filter(visited=False, 
-                                         collected=False,
-                                         sale_price__isnull=False)
+    to_parse = (AuctionLot
+                .objects
+                .using("prod")
+                .filter(visited=False, 
+                        collected=False,
+                        sale_price__isnull=False))
     for lot in to_parse:
         try: 
             parse_lot_detail(lot)
-            lot.collected = True
         except LotParseError as e:
             print(f"Parse failed - {e}")
             continue
         finally:
             lot.visited=True
             lot.save()
-            time.sleep(5)
+            time.sleep(random.randint(2,7))

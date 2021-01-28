@@ -15,6 +15,18 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS",
 # DATABASES
 # ------------------------------------------------------------------------------
 # DATABASES["default"] = env.db("DATABASE_URL")  # noqa F405
+
+DATABASES = {
+	"default": {
+		"ENGINE": "django.db.backends.postgresql_psycopg2",
+		"NAME": "exp_taste_db",
+		"USER": "exp_taste_user",
+		"PASSWORD": env("exp_taste_DB_PW"), # store in environment variable
+		"HOST": env("DB_HOST", default="localhost"),
+		"PORT": "",                      # Set to empty string for default.
+	}
+}
+DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa F405
 
 # CACHES
@@ -150,7 +162,7 @@ INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa F405
 # the site admins on every HTTP 500 error when DEBUG=False.
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": True,
+    "disable_existing_loggers": False,
     "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
     "formatters": {
         "verbose": {
@@ -165,7 +177,7 @@ LOGGING = {
             "class": "django.utils.log.AdminEmailHandler",
         },
         "console": {
-            "level": "DEBUG",
+            "level": "INFO",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
@@ -180,7 +192,7 @@ LOGGING = {
         "django.security.DisallowedHost": {
             "level": "ERROR",
             "handlers": ["console"],
-            "propagate": True,
+            "propagate": False,
         },
     },
 }

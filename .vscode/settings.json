@@ -3,13 +3,19 @@
     "python.pythonPath": "/usr/local/src/env/exp_taste/bin/python",
     "cSpell.ignoreWords": [
         "a",
+        "boto",
         "curr",
         "divs",
         "dstr",
         "dstrs",
         "elem",
+        "khtml",
         "lot",
         "mdash",
+        "root",
+        "s",
+        "static",
+        "storage",
         "xnoh"
     ]
 }
