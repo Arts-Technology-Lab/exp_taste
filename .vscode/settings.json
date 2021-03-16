@@ -17,5 +17,6 @@
         "static",
         "storage",
         "xnoh"
-    ]
+    ],
+    "restructuredtext.languageServer.disabled": true
 }

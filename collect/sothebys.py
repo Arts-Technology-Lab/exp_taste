@@ -1,5 +1,6 @@
 import datetime
 import json
+import hashlib
 import os
 import random
 import re
@@ -296,12 +297,15 @@ def get_image_url(soup):
             url = f"https://sothebys.com{url}"
         except:
             raise LotParseError("Couldn't find image url")
+    if not url:
+        raise LotParseError("Couldn't find image url")
     return url
 
 
 def save_image(soup, lot):
     url = get_image_url(soup)
-    filename = f"{slugify(lot.title)}.jpg"
+    title_hash = hashlib.md5(lot.title.encode()).hexdigest()
+    filename = f"{title_hash}.jpg"
     print(f"fetching image from {url}")
     lot_img = LotImage(source=url,
                        lot=lot)
@@ -382,7 +386,7 @@ def lot_from_html(soup):
     return res            
 
 def parse_lot_detail(lot):
-    print(f"Parsing {lot.url}")
+    print(f"Parsing Lot id {lot.id} from {lot.url}")
     r = requests.get(lot.url, headers=HEADERS)
     soup = BeautifulSoup(r.content, "html.parser")
     try:
@@ -406,6 +410,16 @@ def parse_lot_detail(lot):
     lot.save(using="prod")
 
 def parse_lots():
+    total = (AuctionLot
+             .objects
+             .using("prod")
+             .filter(sale_price__isnull=False)
+             .count())
+    visited = (AuctionLot
+                 .objects
+                 .using("prod")
+                 .filter(visited=True)
+                 .count())             
     to_parse = (AuctionLot
                 .objects
                 .using("prod")
@@ -419,6 +433,10 @@ def parse_lots():
             print(f"Parse failed - {e}")
             continue
         finally:
+            
             lot.visited=True
             lot.save()
+            visited += 1
+            print(f"Visited {visited} of {total} {visited/total * 100:.2f}% complete")
+            print("")
             time.sleep(random.randint(2,7))
