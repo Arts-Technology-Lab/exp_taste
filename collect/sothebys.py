@@ -31,6 +31,7 @@ HEADERS = {
 }
 
 TMP_DIR = pathlib.Path("/tmp")
+SAVE_PATH = pathlib.Path("/media/gabe/data/exptaste/")
 
 DEPARTMENTS = [
     ("Contemporary Art", "00000164-609b-d1db-a5e6-e9ff01230000"),
@@ -369,11 +370,15 @@ def lot_from_meta(soup):
     return {"description": description,
             "title": title}
 
-def lot_from_html(soup):
+def lot_from_html(soup, lot_id):
     d_div = soup.find("div", class_="lotdetail-description-text")
     if d_div:
         description = "\n".join(d_div.stripped_strings)
     else:
+        save_file = SAVE_PATH / f"{lot_id}.html"
+        with open(save_file, "w") as page:
+            print(f"Saved for later - {save_file}")
+            page.write(soup.prettify())
         raise LotParseError("Couldn't find info in html")
 
     a_div = soup.find("div", class_="lotdetail-guarantee")
@@ -389,6 +394,7 @@ def parse_lot_detail(lot):
     print(f"Parsing Lot id {lot.id} from {lot.url}")
     r = requests.get(lot.url, headers=HEADERS)
     soup = BeautifulSoup(r.content, "html.parser")
+
     try:
         print("Parsing data from ld+json")
         res = lot_from_json(soup)
@@ -398,11 +404,12 @@ def parse_lot_detail(lot):
             res = lot_from_meta(soup)
         except LotParseError:
             print("No meta tag info, parsing from html")
-            res = lot_from_html(soup)
+            res = lot_from_html(soup, lot.id)
     if res:
         for attr, val in res.items():
             setattr(lot, attr, val)
     else:
+        
         raise LotParseError("Could not find attributes in page")
     time.sleep(random.randint(1,3))
     save_image(soup, lot)
