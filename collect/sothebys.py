@@ -395,6 +395,10 @@ def parse_lot_detail(lot):
     r = requests.get(lot.url, headers=HEADERS)
     soup = BeautifulSoup(r.content, "html.parser")
 
+    ad = soup.find(string=re.compile("Access Denied", flags=re.IGNORECASE))
+    if ad:
+        raise LotParseError("Access Denied")
+
     try:
         print("Parsing data from ld+json")
         res = lot_from_json(soup)
