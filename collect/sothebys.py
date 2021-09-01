@@ -371,14 +371,17 @@ def lot_from_meta(soup):
             "title": title}
 
 def lot_from_html(soup, lot_id):
+
+    save_file = SAVE_PATH / f"{lot_id}.html"
+    with open(save_file, "w") as page:
+        print(f"Saved for later - {save_file}")
+        page.write(soup.prettify())
+        
     d_div = soup.find("div", class_="lotdetail-description-text")
     if d_div:
         description = "\n".join(d_div.stripped_strings)
     else:
-        save_file = SAVE_PATH / f"{lot_id}.html"
-        with open(save_file, "w") as page:
-            print(f"Saved for later - {save_file}")
-            page.write(soup.prettify())
+        
         raise LotParseError("Couldn't find info in html")
 
     a_div = soup.find("div", class_="lotdetail-guarantee")
