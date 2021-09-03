@@ -8465,6 +8465,23 @@ footer > .container {
 a {
   cursor: pointer; }
 
+article {
+  max-width: 640px;
+  max-width: 40rem;
+  margin: 0 auto; }
+
+article hr {
+  border-top: 1px solid #555;
+  margin: 2em 0; }
+
+.lot-title {
+  font-size: 1.5em; }
+
+.intro {
+  font-size: 1.2em;
+  max-width: 640px;
+  max-width: 40rem; }
+
 .alert-debug {
   background-color: #fff;
   border-color: #d6e9c6;
