@@ -13,6 +13,7 @@ class Feedback(models.Model):
     id = models.UUIDField("id", primary_key=True, default=uuid.uuid4)
     name = models.CharField("Name", max_length=150)
     email = models.EmailField("Email")
+    location = models.CharField("Location", max_length=200, default="")
     created = models.DateTimeField("Timestamp", default=utc_now)
 
     class Meta:
