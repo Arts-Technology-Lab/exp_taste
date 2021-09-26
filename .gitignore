@@ -269,3 +269,4 @@ tags
 exp_taste/media/
 .pytest_cache/
 scratch/
+.env

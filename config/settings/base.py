@@ -9,11 +9,7 @@ ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # exp_taste/
 APPS_DIR = ROOT_DIR / "exp_taste"
 env = environ.Env()
-
-READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
-if READ_DOT_ENV_FILE:
-    # OS environment variables take precedence over variables from .env
-    env.read_env(str(ROOT_DIR / ".env"))
+env.read_env(str(ROOT_DIR / ".env"))
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -36,6 +32,7 @@ USE_L10N = True
 USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(ROOT_DIR / "locale")]
+DEFAULT_AUTO_FIELD="django.db.models.AutoField"
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -70,8 +67,10 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "exp_taste.users.apps.UsersConfig",
-    "main"
+    "main",
+    "feedback"
 ]
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
