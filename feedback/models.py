@@ -11,8 +11,8 @@ def utc_now():
 
 class Feedback(models.Model):
     id = models.UUIDField("id", primary_key=True, default=uuid.uuid4)
-    name = models.CharField("Name", max_length=150)
-    email = models.EmailField("Email")
+    name = models.CharField("Name", max_length=150, default="", blank=True)
+    email = models.EmailField("Email", default="", blank=True)
     location = models.CharField("Location", max_length=200, default="")
     created = models.DateTimeField("Timestamp", default=utc_now)
 
@@ -20,7 +20,7 @@ class Feedback(models.Model):
         ordering = ["-created"]
 
     def __str__(self):
-        return f"{self.name} - {self.created}"
+        return str(self.created)
 
 
 class Question(models.Model):

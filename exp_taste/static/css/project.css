@@ -8482,6 +8482,9 @@ article hr {
   max-width: 640px;
   max-width: 40rem; }
 
+.question {
+  font-size: 1.2em; }
+
 .alert-debug {
   background-color: #fff;
   border-color: #d6e9c6;

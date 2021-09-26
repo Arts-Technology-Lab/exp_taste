@@ -32,10 +32,7 @@ def submit_feedback(request):
         if not captcha:
             context["captcha_error"] = True
         else:
-            feedback = Feedback(
-                name=data["name"], 
-                email=data["email"], 
-                location=data["location"])
+            feedback = Feedback(location=data["location"])
             feedback.save()
             for key, value in data.items():
                 if key.startswith("question_"):
