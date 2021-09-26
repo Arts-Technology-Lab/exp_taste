@@ -11,5 +11,12 @@ urlpatterns = [
          name="form"),
     path("thankyou",
         TemplateView.as_view(template_name="feedback/thankyou.html"), 
-        name="thankyou")
+        name="thankyou"),
+    path("list",
+         views.FeedbackList.as_view(),
+         name="list"),
+    path("detail/<uuid:pk>",
+         views.FeedbackDetail.as_view(),
+         name="detail")
+        
 ]

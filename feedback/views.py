@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from feedback.models import (
     PageCopy, 
@@ -50,4 +52,20 @@ def submit_feedback(request):
             }
         )
 
+class FeedbackList(LoginRequiredMixin, ListView):
+    model = Feedback
+    template_name = "feedback/list.html"
+    paginate_by = 25
 
+
+class FeedbackDetail(LoginRequiredMixin, DetailView):
+    model = Feedback
+    template_name = "feedback/detail.html"
+
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        all_responses = (list(self.object.freeresponse_set.all()) + 
+                         list(self.object.multichoiceresponse_set.all()))
+        all_responses.sort(key=lambda r: r.question.order)
+        context["all_responses"] = all_responses
+        return context

@@ -15,6 +15,9 @@ class Feedback(models.Model):
     email = models.EmailField("Email")
     created = models.DateTimeField("Timestamp", default=utc_now)
 
+    class Meta:
+        ordering = ["-created"]
+
     def __str__(self):
         return f"{self.name} - {self.created}"
 
