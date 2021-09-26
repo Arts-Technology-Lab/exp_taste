@@ -45,6 +45,7 @@ class MultiChoiceOption(models.Model):
     order = models.PositiveSmallIntegerField("Order", default=1)
     text = models.TextField("Text", default="")
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    weight = models.IntegerField("Weight", default=0)
 
     class Meta:
         ordering = ["order"]
