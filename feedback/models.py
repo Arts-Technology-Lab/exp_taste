@@ -27,16 +27,15 @@ class Question(models.Model):
     text = models.TextField("Question")
     active = models.BooleanField("Active", default=True)
     qtype = models.PositiveSmallIntegerField("Question Type", 
-                                             choices=QuestionTypes.choices)
+                                             choices=QuestionTypes.choices,
+                                             default=1)
     order = models.PositiveSmallIntegerField("Order", default=1)
 
     class Meta:
         ordering = ["order"]
 
-    @property
-    def html(self):
-        return markdown.markdown(self.text)
-        
+    def __str__(self):
+        return self.text[:20]
 
 
 class MultiChoiceOption(models.Model):
@@ -46,6 +45,9 @@ class MultiChoiceOption(models.Model):
 
     class Meta:
         ordering = ["order"]
+
+    def __str__(self):
+        return self.text[:20]
 
     @property
     def html(self):

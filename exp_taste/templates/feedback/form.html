@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 640px; margin: 0 auto;">
+    <h2>Feedback</h2>
+    <div class="intro">
+        {{ intro|safe }}
+    </div>
+    {% if questions %}
+    <div class="question_form">
+        {% include "feedback/questions.html" %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock content %}
