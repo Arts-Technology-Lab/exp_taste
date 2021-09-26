@@ -20,36 +20,39 @@ def submit_feedback(request):
     except IndexError:
         pass
     questions = Question.objects.filter(active=True)
+
+    context = {
+        "intro": intro,
+        "questions": questions,
+        "captcha_error": False
+    }
     if request.POST:
         data = request.POST.copy()
-        feedback = Feedback(name=data["name"], email=data["email"])
-        feedback.save()
-        for key, value in data.items():
-            if key.startswith("question_"):
-                q_id = key.split("_")[1]
-                question = questions.get(id=int(q_id))
-                if question.qtype == 1:
-                    fr = FreeResponse(question=question, 
-                                      feedback=feedback, 
-                                      response=value)
-                    fr.save()
-                elif question.qtype == 2:
-                    selected = MultiChoiceOption.objects.get(id=int(value))
-                    mcr = MultiChoiceResponse(question=question, 
-                                              feedback=feedback, 
-                                              selected=selected)
-                    mcr.save()
-        return redirect("feedback:thankyou")
-
-        
-
-
+        captcha = data.get("g-recaptcha-response", None)
+        if not captcha:
+            context["captcha_error"] = True
+        else:
+            feedback = Feedback(location=data["location"])
+            feedback.save()
+            for key, value in data.items():
+                if key.startswith("question_"):
+                    q_id = key.split("_")[1]
+                    question = questions.get(id=int(q_id))
+                    if question.qtype == 1:
+                        fr = FreeResponse(question=question, 
+                                        feedback=feedback, 
+                                        response=value)
+                        fr.save()
+                    elif question.qtype == 2:
+                        selected = MultiChoiceOption.objects.get(id=int(value))
+                        mcr = MultiChoiceResponse(question=question, 
+                                                feedback=feedback, 
+                                                selected=selected)
+                        mcr.save()
+            return redirect("feedback:thankyou")
     return render(
         request, 
-        "feedback/form.html", context={
-            "intro": intro,
-            "questions": questions
-            }
+        "feedback/form.html", context=context
         )
 
 class FeedbackList(LoginRequiredMixin, ListView):

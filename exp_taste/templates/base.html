@@ -29,6 +29,8 @@
     <link href="{% static 'css/project.min.css' %}" rel="stylesheet">
     {% endblock %}
 
+    {% block extra_head %}{% endblock extra_head %}
+
   </head>
 
   <body>
@@ -107,6 +109,9 @@
       <script src="{% static 'js/project.min.js' %}"></script>
 
     {% endblock javascript %}
+    {% block more_js %}
+    
+    {% endblock more_js %}
     <script async defer src="https://sa.expensivetaste.art/latest.js"></script>
     <noscript><img src="https://sa.expensivetaste.art/noscript.gif" alt=""/></noscript>
   </body>

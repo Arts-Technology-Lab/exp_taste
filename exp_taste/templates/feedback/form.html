@@ -2,7 +2,6 @@
 
 {% block content %}
 <div style="max-width: 640px; margin: 0 auto;">
-    <h2>Feedback</h2>
     <div class="intro">
         {{ intro|safe }}
     </div>
@@ -13,21 +12,13 @@
     {% endif %}
     {% if questions %}
     <div class="question_form">
-        <form method="POST" action=".">
+        <form method="POST" action="." id="feedback-form">
             {% csrf_token %}
-            <div class="form-group">
-                <label for="id_name">Name</label>
-                <input class="form-control" type="text" name="name" id="id_name" required />
-            </div>
-            <div class="form-group">
-                <label for="id_email">Email</label>
-                <input class="form-control" type="email" name="email" id="id_email" required />
-            </div>
             {% for question in questions %}
                 <div class="form-group">
 
                 {% if question.qtype == 1 %}
-                    <label for="question_{{ question.id }}">
+                    <label for="question_{{ question.id }}" class="question">
                         {{ question.order }}. {{ question.text }}
                     </label>
                     <textarea 
@@ -35,11 +26,11 @@
                         type="text" 
                         id="question_{{question.id}}" 
                         name="question_{{question.id}}" 
-                        rows="8"
+                        rows="1"
                         required
                         ></textarea>
                 {% elif question.qtype == 2 %}
-                    <p class="m-0">
+                    <p class="m-0 question">
                         {{ question.order }}. {{ question.text }}
                     </p>
                     {% for option in question.multichoiceoption_set.all %}
@@ -59,6 +50,12 @@
                 {% endif %}
                 </div>
             {% endfor %}
+            <div class="g-recaptcha" data-sitekey="6Lc1948cAAAAAHdTlWNiEwfWGPWTJcT7ShZ_SAmB"></div>
+            {% if captcha_error %}
+            <p class="alert-danger p-3" style="max-width: 20rem;">
+                Please complete the captcha
+            </p>
+            {% endif %}
             <div class="form-group d-flex flex-row-reverse">
                 <input type="submit" value="Submit" class="btn btn-primary" />
             </div>
@@ -66,5 +63,8 @@
     </div>
     {% endif %}
 </div>
-
 {% endblock content %}
+
+{% block more_js %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+ {% endblock more_js %}
