@@ -33,6 +33,7 @@ class Question(models.Model):
                                              choices=QuestionTypes.choices,
                                              default=1)
     order = models.PositiveSmallIntegerField("Order", default=1)
+    required = models.BooleanField("Required", default=True)
 
     class Meta:
         ordering = ["order"]
@@ -44,6 +45,7 @@ class Question(models.Model):
 class MultiChoiceOption(models.Model):
     order = models.PositiveSmallIntegerField("Order", default=1)
     text = models.TextField("Text", default="")
+    text2 = models.CharField("Text", max_length=280, default="")
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
     class Meta:
@@ -56,6 +58,17 @@ class MultiChoiceOption(models.Model):
     def html(self):
         return markdown.markdown(self.text)
 
+
+class Response(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    text = models.TextField("Free Response", default="", blank=True)
+    selected = models.ForeignKey(
+        MultiChoiceOption, 
+        on_delete=models.CASCADE,
+        blank=True, null=True)
+
+    class Meta:
+        ordering = ["question__order"]
 
 class FreeResponse(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

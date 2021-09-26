@@ -10,10 +10,11 @@ def truncated_text(obj, max_length=20):
 class MultiChoiceInline(admin.TabularInline):
     model = MultiChoiceOption
     extra = 1
+    fields = ('order', 'text2', 'weight')
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    fields = ('order', 'text', 'active', 'qtype')
+    fields = ('order', 'text', 'active', 'qtype', 'required')
     list_display = (truncated_text, 'order')
     list_editable = ('order',)
     inlines = [MultiChoiceInline]
