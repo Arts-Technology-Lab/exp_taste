@@ -1,4 +1,5 @@
 import PIL
+import markdown
 
 from django.db import models
 from django.utils.text import slugify
@@ -239,3 +240,17 @@ class Artist(models.Model):
     def __str__(self):
         return self.name[:30]
         
+
+class AboutPage(models.Model):
+    text = models.TextField("Text")
+    current = models.BooleanField("Current", default=True)
+
+    class Meta:
+        verbose_name = "About Page"
+
+    def __str__(self):
+        return self.text[:20]
+
+    @property
+    def html(self):
+        return markdown.markdown(self.text)

@@ -1,10 +1,11 @@
 import random
 
 from django.db.models import Count
+from django.db.models.indexes import Index
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-from main.models import AuctionLot, LotImage
+from main.models import AboutPage, AuctionLot, LotImage
 
 class Home(TemplateView):
     template_name = "main/home.html"
@@ -33,3 +34,12 @@ class Home(TemplateView):
         context["lot_b_img"] = b.lotimage_set.all()[0]
 
         return context
+
+
+def about(request):
+    try:
+        page = AboutPage.objects.filter(current=True)[0]
+    except IndexError:
+        return render(request, "pages/about.html")
+        
+    return render(request, "main/about.html", context={"copy": page.html})
