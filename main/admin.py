@@ -1,6 +1,6 @@
 from django.contrib import admin
 from main.models import (Auction, AuctionLot, Artwork, ArtImage, Artist, 
-                         LotImage, Category)
+                         LotImage, Category, AboutPage)
 
 @admin.register(Auction)
 class AuctionAdmin(admin.ModelAdmin):
@@ -43,3 +43,10 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     readonly_fields = ("name_slug", )
     
+@admin.register(AboutPage)
+class AboutPageAdmin(admin.ModelAdmin):
+    list_display = ('truncate_text', 'current')
+    list_editable =  ('current',)
+
+    def truncate_text(self, obj):
+        return obj.text[:20]

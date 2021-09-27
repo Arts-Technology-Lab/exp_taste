@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %} 
+<h2>Responses</h2>
+
+<dl class="row">
+    <dt class="col-sm-1">Received:</dt>
+    <dd class="col-sm-11">{{ object.created|date:'r' }}</dd>
+</dl>
+
+{% for response in all_responses %}
+    <div class="mb-4" style="max-width: 40rem;">
+        <h3>Question {{ response.question.order }}</h3>
+        <p>
+            {{ response.question.text }}
+        </p>
+        {% if response.question.qtype == 1 %}
+        <p>
+            <strong>Response:</strong> {{ response.text }} 
+        </p>
+        {% elif response.question.qtype == 2 %}
+        <ul class="list-group">
+            {% for option in response.question.multichoiceoption_set.all %}
+            <li class="list-group-item {% if option.id == response.selected.id %}active{% endif %}">
+                {{ option.text }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+{% endfor %}
+
+
+{% endblock content %}

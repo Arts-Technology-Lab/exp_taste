@@ -29,6 +29,8 @@
     <link href="{% static 'css/project.min.css' %}" rel="stylesheet">
     {% endblock %}
 
+    {% block extra_head %}{% endblock extra_head %}
+
   </head>
 
   <body>
@@ -46,7 +48,10 @@
               <a class="nav-link" href="{% url 'main:home' %}">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'about' %}">About</a>
+              <a class="nav-link" href="{% url 'main:about' %}">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'feedback:form' %}">Feedback</a>
             </li>
             {% if request.user.is_staff %}
             <li class="nav-item">
@@ -85,7 +90,7 @@
 
     <footer class="bg-light mt-3">
       <div class="container text-center">
-	      <small>Developed by <a href="https://kotsf.com">KotSF</a></small>
+	      <small>Developed by <a href="https://kotsf.com">KotSF</a> with <a href="https://msteinberg.art">Monica Steinberg</a></small>
       </div>
     </footer>
 
@@ -104,6 +109,9 @@
       <script src="{% static 'js/project.min.js' %}"></script>
 
     {% endblock javascript %}
+    {% block more_js %}
+    
+    {% endblock more_js %}
     <script async defer src="https://sa.expensivetaste.art/latest.js"></script>
     <noscript><img src="https://sa.expensivetaste.art/noscript.gif" alt=""/></noscript>
   </body>

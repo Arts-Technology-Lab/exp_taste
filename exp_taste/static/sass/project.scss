@@ -49,6 +49,29 @@ a {
   cursor: pointer;
 }
 
+article {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+article hr {
+  border-top: 1px solid #555;
+  margin: 2em 0;
+}
+
+.lot-title {
+  font-size: 1.5em;
+}
+
+.intro {
+  font-size: 1.2em;
+  max-width: 40rem;
+}
+
+.question {
+  font-size: 1.2em;
+}
+
 ////////////////////////////////
 		//Variables//
 ////////////////////////////////

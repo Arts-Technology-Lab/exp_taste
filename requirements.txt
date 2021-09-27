@@ -1,7 +1,7 @@
 alabaster==0.7.12
 appdirs==1.4.4
 argon2-cffi==20.1.0
-asgiref==3.2.10
+asgiref==3.4.1
 astroid==2.4.2
 attrs==20.2.0
 Babel==2.8.0
@@ -20,7 +20,7 @@ coverage==5.3
 decorator==4.4.2
 defusedxml==0.6.0
 distlib==0.3.1
-Django==3.0.10
+Django==3.2.7
 django-allauth==0.42.0
 django-anymail==8.0
 django-cors-headers==3.5.0
@@ -58,6 +58,7 @@ Jinja2==2.11.2
 jmespath==0.10.0
 lazy-object-proxy==1.4.3
 livereload==2.6.3
+Markdown==3.3.4
 MarkupSafe==1.1.1
 mccabe==0.6.1
 more-itertools==8.5.0

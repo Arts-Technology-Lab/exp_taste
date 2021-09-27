@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block content %}
+<div style="max-width: 640px; margin: 0 auto;">
+    <div class="intro">
+        {{ intro|safe }}
+    </div>
+    {% if request.user.is_authenticated %}
+    <p>
+        <a href="{% url 'feedback:list' %}">View Feedback</a>
+    </p>
+    {% endif %}
+        
+    <div class="question_form">
+        {% crispy form %}
+    </div>
+    
+</div>
+{% endblock content %}
+
+{% block more_js %}
+<script src="{% static 'js/feedback.js' %}"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+ {% endblock more_js %}
