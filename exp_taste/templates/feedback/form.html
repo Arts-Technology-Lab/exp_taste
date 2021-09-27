@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <div style="max-width: 640px; margin: 0 auto;">
@@ -50,14 +51,19 @@
                 {% endif %}
                 </div>
             {% endfor %}
-            <div class="g-recaptcha" data-sitekey="6Lc1948cAAAAAHdTlWNiEwfWGPWTJcT7ShZ_SAmB"></div>
+            <div 
+                class="g-recaptcha" 
+                data-sitekey="6Lc1948cAAAAAHdTlWNiEwfWGPWTJcT7ShZ_SAmB"
+                data-callback="enableSubmit"
+                data-expired-callback="captchaExpired"> 
+            </div>
             {% if captcha_error %}
             <p class="alert-danger p-3" style="max-width: 20rem;">
                 Please complete the captcha
             </p>
             {% endif %}
             <div class="form-group d-flex flex-row-reverse">
-                <input type="submit" value="Submit" class="btn btn-primary" />
+                <input id="feedback-submit" disabled type="submit" value="Submit" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -66,5 +72,6 @@
 {% endblock content %}
 
 {% block more_js %}
+<script src="{% static 'js/feedback.js' %}"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
  {% endblock more_js %}

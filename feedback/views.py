@@ -11,6 +11,7 @@ from feedback.models import (
     MultiChoiceOption
     )
 
+from feedback.utils import verify_captcha
 
 def submit_feedback(request):
     intro = "We're working on some feedback questions. Please check again soon!"
@@ -28,11 +29,11 @@ def submit_feedback(request):
     }
     if request.POST:
         data = request.POST.copy()
-        captcha = data.get("g-recaptcha-response", None)
+        captcha = verify_captcha(data.get("g-recaptcha-response", None))
         if not captcha:
             context["captcha_error"] = True
         else:
-            feedback = Feedback(location=data["location"])
+            feedback = Feedback()
             feedback.save()
             for key, value in data.items():
                 if key.startswith("question_"):

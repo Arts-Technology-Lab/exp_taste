@@ -276,3 +276,5 @@ REST_FRAMEWORK = {
 CORS_URLS_REGEX = r"^/api/.*$"
 # Your stuff...
 # ------------------------------------------------------------------------------
+RECAPTCHA_URL = env("RECAPTCHA_URL")
+RECAPTCHA_KEY = env("RECAPTCHA_KEY")
