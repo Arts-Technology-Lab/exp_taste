@@ -62,6 +62,7 @@ class MultiChoiceOption(models.Model):
 
 
 class Response(models.Model):
+    feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.TextField("Free Response", default="", blank=True)
     selected = models.ForeignKey(

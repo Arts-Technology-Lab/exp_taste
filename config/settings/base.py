@@ -276,5 +276,8 @@ REST_FRAMEWORK = {
 CORS_URLS_REGEX = r"^/api/.*$"
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# Google reCaptcha settings
 RECAPTCHA_URL = env("RECAPTCHA_URL")
 RECAPTCHA_KEY = env("RECAPTCHA_KEY")
+RECAPTCHA_SITE = env("RECAPTCHA_SITE")

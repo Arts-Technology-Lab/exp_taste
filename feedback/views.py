@@ -13,7 +13,6 @@ from feedback.models import (
     MultiChoiceOption
     )
 from feedback.forms import ActiveQuestionsForm
-from feedback.utils import verify_captcha
 
 logger = logging.getLogger(__name__)
 
@@ -24,44 +23,21 @@ def submit_feedback(request):
         intro = copy.html
     except IndexError:
         pass
-    questions = Question.objects.filter(active=True)
-    form = ActiveQuestionsForm(request=request)
-
-    context = {
-        "intro": intro,
-        "questions": questions,
-        "form": form,
-        "captcha_error": False
-    }
+    
     if request.POST:
         logger.info(request.POST)
         data = request.POST.copy()
-        captcha = verify_captcha(data.get("g-recaptcha-response", None))
-        if not captcha:
-            context["captcha_error"] = True
-        else:
-            feedback = Feedback()
-            feedback.save()
-            for key, value in data.items():
-                if key.startswith("question_"):
-                    q_id = key.split("_")[1]
-                    question = questions.get(id=int(q_id))
-                    if question.qtype == 1:
-                        fr = FreeResponse(question=question, 
-                                        feedback=feedback, 
-                                        response=value)
-                        fr.save()
-                    elif question.qtype == 2:
-                        selected = MultiChoiceOption.objects.get(id=int(value))
-                        mcr = MultiChoiceResponse(question=question, 
-                                                feedback=feedback, 
-                                                selected=selected)
-                        mcr.save()
+        form = ActiveQuestionsForm(data, request=request)
+        if form.is_valid():
+            form.save()        
             return redirect("feedback:thankyou")
-    return render(
-        request, 
-        "feedback/form.html", context=context
-        )
+    else:
+        form = ActiveQuestionsForm(request=request)
+    context = {
+        "intro": intro,
+        "form": form,
+    }
+    return render(request, "feedback/form.html", context=context)
 
 class FeedbackList(LoginRequiredMixin, ListView):
     model = Feedback
@@ -75,8 +51,5 @@ class FeedbackDetail(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context =  super().get_context_data(**kwargs)
-        all_responses = (list(self.object.freeresponse_set.all()) + 
-                         list(self.object.multichoiceresponse_set.all()))
-        all_responses.sort(key=lambda r: r.question.order)
-        context["all_responses"] = all_responses
+        context["all_responses"] = self.object.response_set.all()
         return context

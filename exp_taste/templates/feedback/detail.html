@@ -16,7 +16,7 @@
         </p>
         {% if response.question.qtype == 1 %}
         <p>
-            <strong>Response:</strong> {{ response.response }}
+            <strong>Response:</strong> {{ response.text }} 
         </p>
         {% elif response.question.qtype == 2 %}
         <ul class="list-group">

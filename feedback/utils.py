@@ -8,4 +8,4 @@ def verify_captcha(token):
         settings.RECAPTCHA_URL,
         data={'secret': settings.RECAPTCHA_KEY,'response': token})
     data = response.json()
-    return data.get("success", None)
+    return data

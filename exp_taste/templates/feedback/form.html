@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static crispy_forms_tags %}
 
 {% block content %}
 <div style="max-width: 640px; margin: 0 auto;">
@@ -11,28 +11,11 @@
         <a href="{% url 'feedback:list' %}">View Feedback</a>
     </p>
     {% endif %}
-    {% if questions %}
+        
     <div class="question_form">
-        <form method="POST" action="." id="feedback-form">
-            {% csrf_token %}
-            {{ form }}
-            <div 
-                class="g-recaptcha" 
-                data-sitekey="6Lc1948cAAAAAHdTlWNiEwfWGPWTJcT7ShZ_SAmB"
-                data-callback="enableSubmit"
-                data-expired-callback="captchaExpired"> 
-            </div>
-            {% if captcha_error %}
-            <p class="alert-danger p-3" style="max-width: 18rem;">
-                Please complete the captcha
-            </p>
-            {% endif %}
-            <div class="form-group d-flex flex-row-reverse">
-                <input id="feedback-submit" disabled type="submit" value="Submit" class="btn btn-primary" />
-            </div>
-        </form>
+        {% crispy form %}
     </div>
-    {% endif %}
+    
 </div>
 {% endblock content %}
 
