@@ -6,7 +6,9 @@
 <ul class="list-group mb-5" style="max-width: 40rem;">
     {% for feedback in page_obj %}
     <li class="list-group-item">
-        <a href="{% url 'feedback:detail' feedback.id %}">{{ feedback }}</a> 
+        <a href="{% url 'feedback:detail' feedback.id %}">
+            {{ feedback }}
+        </a> 
     </li>
     {% empty %}
     <li class="list-group-item">
