@@ -64,6 +64,8 @@ class ActiveQuestionsForm(forms.Form):
         if not captcha.get('success', False):
             logger.info(captcha)
             raise forms.ValidationError("Captcha Failed")
+        if not any(cleaned_data.values()):
+            raise forms.ValidationError("Please answer at least one question")
         return cleaned_data
 
     def save(self):

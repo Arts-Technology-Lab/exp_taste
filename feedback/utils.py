@@ -3,7 +3,7 @@ import requests
 
 def verify_captcha(token):
     if not token:
-        return False
+        return {"success": False}
     response = requests.post(
         settings.RECAPTCHA_URL,
         data={'secret': settings.RECAPTCHA_KEY,'response': token})

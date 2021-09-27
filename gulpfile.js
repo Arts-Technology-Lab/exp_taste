@@ -113,7 +113,7 @@ function imgCompression() {
 
 // Run django server
 function runServer(cb) {
-  var cmd = spawn('python', ['manage.py', 'runserver'], {stdio: 'inherit'})
+  var cmd = spawn('python', ['manage.py', 'runserver', '0.0.0.0:8000'], {stdio: 'inherit'})
   cmd.on('close', function(code) {
     console.log('runServer exited with code ' + code)
     cb(code)
@@ -129,8 +129,8 @@ function initBrowserSync() {
         `${paths.templates}/*.html`
       ], {
         // https://www.browsersync.io/docs/options/#option-proxy
-        proxy: 'localhost:8000'
-        
+        proxy: 'localhost:8000',
+        // host: '0.0.0.0'
       }
     )
 }
