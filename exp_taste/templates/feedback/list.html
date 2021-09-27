@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load feedback_extra %}
+{% load tz %}
 
 {% block content %}
 <h2>Feedback</h2>
@@ -7,7 +8,9 @@
     {% for feedback in page_obj %}
     <li class="list-group-item">
         <a href="{% url 'feedback:detail' feedback.id %}">
-            {{ feedback }}
+            {% timezone request.user.timezone %}
+            {{ feedback.created|date:'D M j, Y' }} at {{ feedback.created|time:'g:i:s A e' }}
+            {% endtimezone %}
         </a> 
     </li>
     {% empty %}
