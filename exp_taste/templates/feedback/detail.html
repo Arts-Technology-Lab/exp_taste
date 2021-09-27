@@ -25,6 +25,11 @@
                 {{ option.text2 }}
             </li>
             {% endfor %}
+            {% if not response.selected %}
+            <li class="list-group-item active">
+                No Response
+            </li>
+            {% endif %}
         </ul>
         {% endif %}
     </div>

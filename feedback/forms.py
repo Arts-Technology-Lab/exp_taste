@@ -25,17 +25,18 @@ class ActiveQuestionsForm(forms.Form):
         self.helper.label_class = "question"
         questions = Question.objects.filter(active=True)
         for question in questions:
+            field_label = f"{question.order}. {question.text}"
             if question.qtype == 1:
                 field = forms.CharField(
-                    max_length=500, 
-                    label=question.text,
+                    max_length=5000, 
+                    label=field_label,
                     required=question.required,
                     widget=Textarea(attrs={"rows": 1}))
             elif question.qtype == 2:
                 options = question.multichoiceoption_set.all()
-                field = forms.ChoiceField(
-                    choices = [(o.id, o.text2) for o in options],
-                    label=question.text,
+                field = forms.ModelChoiceField(
+                    queryset=options,
+                    label=field_label,
                     required=question.required,
                     widget=RadioSelect
                 )
@@ -81,8 +82,7 @@ class ActiveQuestionsForm(forms.Form):
             if question.qtype == 1:
                 response.text = value
             elif question.qtype == 2:
-                option = question.multichoiceoption_set.get(id=int(value))
-                response.selected = option
+                response.selected = value
             response.save()
         
                 
