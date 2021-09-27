@@ -57,10 +57,10 @@ def feedback_to_excel(feedback_qs):
         response_vals = []
         for r in feedback.response_set.order_by('question__id'):
             if r.question.qtype == 1:
-                response_vals.append(r.text)
+                response_vals.append(r.text or "No Response")
             elif r.question.qtype == 2:
-                response_vals.append(r.selected.text2)
-                response_vals.append(r.selected.weight)
+                response_vals.append(r.selected.text2 if r.selected else "No Response")
+                response_vals.append(r.selected.weight if r.selected else "NaN")
         for col, v in enumerate(response_vals):
             _ = sheet.cell(row=row+2, column=col+3, value=v)
 
