@@ -17,8 +17,6 @@ class Home(TemplateView):
         if qs1.count() > 0:                                        
             idx1 = random.randint(0, qs1.count() - 1)
             a = qs1[idx1]
-            
-                            
             min_year = a.auction.end_date.year - 1
             max_year = a.auction.end_date.year + 1
             qs2 = (AuctionLot
