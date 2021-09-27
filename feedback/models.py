@@ -45,7 +45,6 @@ class Question(models.Model):
 
 class MultiChoiceOption(models.Model):
     order = models.PositiveSmallIntegerField("Order", default=1)
-    text = models.TextField("Text", default="")
     text2 = models.CharField("Text", max_length=280, default="")
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     weight = models.IntegerField("Weight", default=0)
@@ -54,11 +53,7 @@ class MultiChoiceOption(models.Model):
         ordering = ["order"]
 
     def __str__(self):
-        return self.text[:20]
-
-    @property
-    def html(self):
-        return markdown.markdown(self.text)
+        return self.text2[:20]
 
 
 class Response(models.Model):
