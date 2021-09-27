@@ -44,27 +44,31 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'main:home' %}">Home <span class="sr-only">(current)</span></a>
+            <li class="nav-item {% if request.path == '/' %}active{% endif %}">
+              <a class="nav-link" href="{% url 'main:home' %}">
+                Home {% if request.path == '/'%}<span class="sr-only">(current)</span>{% endif %}
+              </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'main:about' %}">About</a>
+            <li class="nav-item {% if 'about' in request.path  %}active{% endif %}">
+              <a class="nav-link" href="{% url 'main:about' %}">
+                About{% if 'about' in request.path %}<span class="sr-only">(current)</span>{% endif %}
+              </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'feedback:form' %}">Feedback</a>
+            <li class="nav-item {% if 'feedback' in request.path  %}active{% endif %}">
+              <a class="nav-link" href="{% url 'feedback:form' %}">
+                Feedback {% if 'feedback' in request.path %}<span class="sr-only">(current)</span>{% endif %}
+              </a>
             </li>
             {% if request.user.is_staff %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'admin:index' %}">{% trans "Admin" %}</a>
             </li>
             {% endif %}
-            {% if request.user.is_authenticated %}
-              <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
-              </li>
-            {% endif %}
           </ul>
+          {% if request.user.is_authenticated %}
+          <a class="btn btn-secondary" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+          {% endif %}
+          
         </div>
       </nav>
 
