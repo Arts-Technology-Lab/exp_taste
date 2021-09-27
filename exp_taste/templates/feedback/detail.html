@@ -10,7 +10,7 @@
     {% endtimezone %}
 </dl>
 
-{% for response in all_responses %}
+{% for response in object.response_set.all %}
     <div class="mb-4" style="max-width: 40rem;">
         <h3>Question {{ response.question.order }}</h3>
         <p>

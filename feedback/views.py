@@ -49,11 +49,7 @@ class FeedbackList(LoginRequiredMixin, ListView):
 class FeedbackDetail(LoginRequiredMixin, DetailView):
     model = Feedback
     template_name = "feedback/detail.html"
-
-    def get_context_data(self, **kwargs):
-        context =  super().get_context_data(**kwargs)
-        context["all_responses"] = self.object.response_set.all()
-        return context
+    
 
 @login_required
 def to_excel(request):
