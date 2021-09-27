@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,8 +12,10 @@ from feedback.models import (
     MultiChoiceResponse,
     MultiChoiceOption
     )
-
+from feedback.forms import ActiveQuestionsForm
 from feedback.utils import verify_captcha
+
+logger = logging.getLogger(__name__)
 
 def submit_feedback(request):
     intro = "We're working on some feedback questions. Please check again soon!"
@@ -21,13 +25,16 @@ def submit_feedback(request):
     except IndexError:
         pass
     questions = Question.objects.filter(active=True)
+    form = ActiveQuestionsForm(request=request)
 
     context = {
         "intro": intro,
         "questions": questions,
+        "form": form,
         "captcha_error": False
     }
     if request.POST:
+        logger.info(request.POST)
         data = request.POST.copy()
         captcha = verify_captcha(data.get("g-recaptcha-response", None))
         if not captcha:

@@ -15,42 +15,7 @@
     <div class="question_form">
         <form method="POST" action="." id="feedback-form">
             {% csrf_token %}
-            {% for question in questions %}
-                <div class="form-group">
-
-                {% if question.qtype == 1 %}
-                    <label for="question_{{ question.id }}" class="question">
-                        {{ question.order }}. {{ question.text }}
-                    </label>
-                    <textarea 
-                        class="form-control"
-                        type="text" 
-                        id="question_{{question.id}}" 
-                        name="question_{{question.id}}" 
-                        rows="1"
-                        required
-                        ></textarea>
-                {% elif question.qtype == 2 %}
-                    <p class="m-0 question">
-                        {{ question.order }}. {{ question.text }}
-                    </p>
-                    {% for option in question.multichoiceoption_set.all %}
-                    <div class="form-check">
-                        <input 
-                            required
-                            class="form-check-input" 
-                            type="radio" 
-                            name="question_{{ question.id }}" 
-                            id="option_{{ option.id }}" 
-                            value="{{ option.id }}"/>
-                        <label class="form-check-label" for="option_{{ option.id }}">
-                        {{ option.text }}
-                        </label>
-                    </div>
-                    {% endfor %}
-                {% endif %}
-                </div>
-            {% endfor %}
+            {{ form }}
             <div 
                 class="g-recaptcha" 
                 data-sitekey="6Lc1948cAAAAAHdTlWNiEwfWGPWTJcT7ShZ_SAmB"
@@ -58,7 +23,7 @@
                 data-expired-callback="captchaExpired"> 
             </div>
             {% if captcha_error %}
-            <p class="alert-danger p-3" style="max-width: 20rem;">
+            <p class="alert-danger p-3" style="max-width: 18rem;">
                 Please complete the captcha
             </p>
             {% endif %}
