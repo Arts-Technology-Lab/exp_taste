@@ -13,12 +13,14 @@
         "lot",
         "mdash",
         "multichoiceoption",
+        "openpyxl",
         "pytz",
         "qtype",
         "root",
         "s",
         "static",
         "storage",
+        "vals",
         "xnoh"
     ],
     "restructuredtext.languageServer.disabled": true

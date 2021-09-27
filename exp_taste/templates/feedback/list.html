@@ -4,6 +4,9 @@
 
 {% block content %}
 <h2>Feedback</h2>
+<p>
+    <a href="{% url 'feedback:export_excel' %}">Export to Excel</a>
+</p>
 <ul class="list-group mb-5" style="max-width: 40rem;">
     {% for feedback in page_obj %}
     <li class="list-group-item">

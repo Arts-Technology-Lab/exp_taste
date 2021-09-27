@@ -17,6 +17,8 @@ urlpatterns = [
          name="list"),
     path("detail/<uuid:pk>",
          views.FeedbackDetail.as_view(),
-         name="detail")
-        
+         name="detail"),
+     path('export/excel',
+          views.to_excel,
+          name="export_excel")
 ]

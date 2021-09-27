@@ -1,14 +1,20 @@
 import logging
+from tempfile import NamedTemporaryFile
+from django.http.response import HttpResponse
 
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.http import FileResponse
 
 from feedback.models import (
     PageCopy, 
     Feedback, 
+    utc_now
     )
 from feedback.forms import ActiveQuestionsForm
+from feedback.utils import feedback_to_excel
 
 logger = logging.getLogger(__name__)
 
@@ -48,3 +54,16 @@ class FeedbackDetail(LoginRequiredMixin, DetailView):
         context =  super().get_context_data(**kwargs)
         context["all_responses"] = self.object.response_set.all()
         return context
+
+@login_required
+def to_excel(request):
+    ts = utc_now().isoformat()
+    filename = f"ExpTaste_Feedback_{ts}.xlsx"
+    wb = feedback_to_excel(Feedback.objects.all())
+    tmp = NamedTemporaryFile()
+    wb.save(tmp.name)
+    tmp.seek(0)
+    response = HttpResponse(tmp.read())
+    response["Content-Type"] = "application/vnd.ms-excel"
+    response["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
