@@ -6,11 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from feedback.models import (
     PageCopy, 
-    Question, 
     Feedback, 
-    FreeResponse, 
-    MultiChoiceResponse,
-    MultiChoiceOption
     )
 from feedback.forms import ActiveQuestionsForm
 
@@ -25,7 +21,6 @@ def submit_feedback(request):
         pass
     
     if request.POST:
-        logger.info(request.POST)
         data = request.POST.copy()
         form = ActiveQuestionsForm(data, request=request)
         if form.is_valid():

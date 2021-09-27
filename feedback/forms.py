@@ -13,6 +13,10 @@ from feedback.utils import verify_captcha
 
 logger = logging.getLogger(__name__)
 
+class MCOModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.text2
+
 class ActiveQuestionsForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
@@ -34,7 +38,7 @@ class ActiveQuestionsForm(forms.Form):
                     widget=Textarea(attrs={"rows": 1}))
             elif question.qtype == 2:
                 options = question.multichoiceoption_set.all()
-                field = forms.ModelChoiceField(
+                field = MCOModelChoiceField(
                     queryset=options,
                     label=field_label,
                     required=question.required,
@@ -63,7 +67,6 @@ class ActiveQuestionsForm(forms.Form):
         token = self.request.POST.get("g-recaptcha-response", None)
         captcha = verify_captcha(token)
         if not captcha.get('success', False):
-            logger.info(captcha)
             raise forms.ValidationError("Captcha Failed")
         if not any(cleaned_data.values()):
             raise forms.ValidationError("Please answer at least one question")
@@ -72,7 +75,6 @@ class ActiveQuestionsForm(forms.Form):
     def save(self):
         feedback = Feedback()
         feedback.save()
-        logger.info(self.cleaned_data)
         for key, value in self.cleaned_data.items():
             if not key.startswith("question_"): 
                 continue

@@ -33,6 +33,6 @@ exec /usr/local/src/env/exp_taste/bin/gunicorn ${DJANGO_WSGI_MODULE}:application
     --timeout $TIMEOUT \
     --user=$USER --group=$GROUP \
     --bind 127.0.0.1:8001 \
-    --log-level=debug \
+    --log-level=warning \
     --log-file=-
 
