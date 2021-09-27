@@ -13,6 +13,7 @@
         "lot",
         "mdash",
         "multichoiceoption",
+        "pytz",
         "qtype",
         "root",
         "s",
