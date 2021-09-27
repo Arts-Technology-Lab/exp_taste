@@ -22,6 +22,7 @@ class ActiveQuestionsForm(forms.Form):
         self.helper.form_id = "feedback-form"
         self.helper.form_method = "POST"
         self.helper.form_action = "."
+        self.helper.label_class = "question"
         questions = Question.objects.filter(active=True)
         for question in questions:
             if question.qtype == 1:
