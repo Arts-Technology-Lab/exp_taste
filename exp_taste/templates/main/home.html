@@ -23,7 +23,10 @@
   >
     <h3 class="lot-title">{{ lot_a.title }}</h3>
     <p class="price hidden">
-      {{ lot_a.currency_symbol }}{{ lot_a.sale_price|intcomma }} {{ lot_a.sale_currency }}
+      {{ lot_a.currency_symbol }}{{ lot_a.sale_price|intcomma }} {{ lot_a.sale_currency }} <br>
+      <small class="font-weight-light">
+        {% if lot_a.sale_currency != "USD" %}(approx. ${{ lot_a.sale_price_usd|intcomma }} USD){% endif %}
+      </small>
     </p>
     <img src="{{ lot_a_img.image.url }}" width="400px" />
     <h4>Description</h4>
@@ -43,7 +46,8 @@
   >
     <h3 class="lot-title">{{ lot_b.title }}</h3>
     <p class="price hidden">
-      {{ lot_b.currency_symbol }}{{ lot_b.sale_price|intcomma }} {{ lot_b.sale_currency }}
+      {{ lot_b.currency_symbol }}{{ lot_b.sale_price|intcomma }} {{ lot_b.sale_currency }}<br>
+      <small class="font-weight-light">{% if lot_b.sale_currency != "USD" %}(approx. ${{ lot_b.sale_price_usd|intcomma }} USD){% endif %}</small>
     </p>
     <img src="{{ lot_b_img.image.url }}" width="400px" />
     <h4>Description</h4>
