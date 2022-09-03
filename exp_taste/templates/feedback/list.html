@@ -1,55 +1,51 @@
-{% extends 'base.html' %}
-{% load feedback_extra %}
-{% load tz %}
-
+{% extends 'base.html' %} 
+{% load feedback_extra %} 
+{% load tz %} 
 {% block content %}
 <h2>Feedback</h2>
 <p>
-    <a href="{% url 'feedback:export_excel' %}">Export to Excel</a>
+  <a href="{% url 'feedback:export_excel' %}">Export to Excel</a>
 </p>
-<ul class="list-group mb-5" style="max-width: 40rem;">
-    {% for feedback in page_obj %}
-    <li class="list-group-item">
-        <a href="{% url 'feedback:detail' feedback.id %}">
-            {% timezone request.user.timezone %}
-            {{ feedback.created|date:'D M j, Y' }} at {{ feedback.created|time:'g:i:s A e' }}
-            {% endtimezone %}
-        </a> 
-    </li>
-    {% empty %}
-    <li class="list-group-item">
-        No feedback yet
-    </li>
-    {% endfor %}
+<p>{{ total }} feedback response{{total|pluralize}} received.</p>
+<ul class="list-group mb-5" style="max-width: 40rem">
+  {% for feedback in page_obj %}
+  <li class="list-group-item">
+    <a href="{% url 'feedback:detail' feedback.id %}">
+      {% timezone request.user.timezone %} 
+        {{ feedback.created|date:'D M j, Y'}} at {{ feedback.created|time:'g:i:s A e' }} 
+      {% endtimezone %}
+    </a>
+  </li>
+  {% empty %}
+  <li class="list-group-item">No feedback yet</li>
+  {% endfor %}
 </ul>
 <nav aria-label="page navigation">
-    <ul class="pagination justify-content-center">
-        {% if page_obj.has_previous %}
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
         <li class="page-item">
             <a class="page-link" href="?page=1">&laquo; first</a>
         </li>
         <li class="page-item">
             <a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
-        </li>            
-        {% endif %}
-        {% for page_number in page_obj.number|page_window:page_obj.paginator.num_pages  %}
+        </li>
+    {% endif %} 
+    {% for page_number in page_obj.number|page_window:page_obj.paginator.num_pages %}
         <li class="page-item {% if page_number == page_obj.number %}active{% endif %}">
             <a class="page-link" href="?page={{ page_number }}">
-                {{ page_number }} 
-                {% if page_number == page_obj.number %}
-                of {{ page_obj.paginator.num_pages }}
-                {% endif %}
+                {{ page_number }} {% if page_number == page_obj.number %} of 
+                {{ page_obj.paginator.num_pages }} {% endif %}
             </a>
         </li>
-        {% endfor %}
-        {% if page_obj.has_next %}
+    {% endfor %} 
+    {% if page_obj.has_next %}
         <li class="page-item">
             <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
         </li>
         <li class="page-item">
             <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
         </li>
-        {% endif %}
-    </ul>
+    {% endif %}
+  </ul>
 </nav>
 {% endblock content %}

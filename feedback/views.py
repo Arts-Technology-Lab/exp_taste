@@ -44,6 +44,11 @@ class FeedbackList(LoginRequiredMixin, ListView):
     model = Feedback
     template_name = "feedback/list.html"
     paginate_by = 25
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["total"] = Feedback.objects.count()
+        return context
 
 
 class FeedbackDetail(LoginRequiredMixin, DetailView):
