@@ -6,25 +6,24 @@ from .base import env
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", 
-                         default=["expensivetaste.art",
-                                  "www.expensivetaste.art",
-                                  "localhost",
-                                  "exptaste"])
+ALLOWED_HOSTS = env.list(
+    "DJANGO_ALLOWED_HOSTS",
+    default=["expensivetaste.art", "www.expensivetaste.art", "localhost", "exptaste"],
+)
 
 # DATABASES
 # ------------------------------------------------------------------------------
 # DATABASES["default"] = env.db("DATABASE_URL")  # noqa F405
 
 DATABASES = {
-	"default": {
-		"ENGINE": "django.db.backends.postgresql_psycopg2",
-		"NAME": "exp_taste_db",
-		"USER": "exp_taste_user",
-		"PASSWORD": env("exp_taste_DB_PW"), # store in environment variable
-		"HOST": env("DB_HOST", default="localhost"),
-		"PORT": "",                      # Set to empty string for default.
-	}
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "exp_taste_db",
+        "USER": "exp_taste_user",
+        "PASSWORD": env("exp_taste_DB_PW"),  # store in environment variable
+        "HOST": env("DB_HOST", default="localhost"),
+        "PORT": "",  # Set to empty string for default.
+    }
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa F405
@@ -124,9 +123,7 @@ DEFAULT_FROM_EMAIL = env(
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
-EMAIL_SUBJECT_PREFIX = env(
-    "DJANGO_EMAIL_SUBJECT_PREFIX", default="[Expensive Taste]"
-)
+EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Expensive Taste]")
 
 # ADMIN
 # ------------------------------------------------------------------------------
@@ -141,11 +138,7 @@ INSTALLED_APPS += ["anymail"]  # noqa F405
 # https://anymail.readthedocs.io/en/stable/installation/#anymail-settings-reference
 # https://anymail.readthedocs.io/en/stable/esps/amazon_ses/
 EMAIL_BACKEND = "anymail.backends.amazon_ses.EmailBackend"
-ANYMAIL = {
-    "AMAZON_SES_CLIENT_PARAMS": {
-        "region_name": "us-east-1"
-    }
-}
+ANYMAIL = {"AMAZON_SES_CLIENT_PARAMS": {"region_name": "us-east-1"}}
 
 # Collectfast
 # ------------------------------------------------------------------------------
@@ -181,8 +174,13 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "/usr/local/src/exp_taste/logs/debug.log",
+        },
     },
-    "root": {"level": "INFO", "handlers": ["console"]},
+    "root": {"level": "INFO", "handlers": ["console", "file"]},
     "loggers": {
         "django.request": {
             "handlers": ["mail_admins"],
