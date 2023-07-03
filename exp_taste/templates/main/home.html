@@ -1,4 +1,7 @@
-{% extends "base.html" %} {% load static humanize %} {% block content %}
+{% extends "base.html" %} 
+{% load static humanize cache %} 
+
+{% block content %}
 <h2 class="font-weight-bolder">Which sold for more at auction?</h2>
 <p class="intro">
   Fancy yourself a savvy art investor? Test your chops by guessing the more
@@ -7,12 +10,13 @@
 <div id="answer" class="hidden">
   <p id="result"></p>
   <p>
-    <a class="btn btn-primary text-white" onclick="location.reload();"
-      >Try again</a
-    >
+    <a class="btn btn-primary text-white" onclick="location.reload();">
+      Try Again
+    </a>
   </p>
 </div>
 
+{% cache 2 question %}
 <div class="row">
   <div
     id="lot_a"
@@ -59,6 +63,7 @@
     </p>
   </div>
 </div>
+{% endcache %}
 
 <div class="mt-5">
   <small>
