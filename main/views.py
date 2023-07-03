@@ -1,5 +1,7 @@
-import random
 import datetime
+import logging
+import random
+
 
 from django.core.cache import cache
 from django.shortcuts import render
@@ -9,8 +11,9 @@ from main.models import AboutPage, AuctionLot, Auction
 
 START_KEY = "oldest_auction"
 END_KEY = "newest_auction"
-three_years = datetime.timedelta(days=365.25 * 3)
 one_year = datetime.timedelta(days=365.25)
+
+logger = logging.getLogger(__name__)
 
 
 class Home(TemplateView):
@@ -26,6 +29,7 @@ class Home(TemplateView):
         context = super().get_context_data(**kwargs)
         oldest_auction = cache.get(START_KEY)
         if not oldest_auction:
+            logger.info(f"cache miss {START_KEY}")
             oldest_auction = (
                 AuctionLot.objects.filter(collected=True, sale_price__isnull=False)
                 .order_by("auction__end_date")
@@ -34,8 +38,8 @@ class Home(TemplateView):
             cache.set(START_KEY, oldest_auction, timeout=None)
 
         newest_auction = cache.get(END_KEY)
-
         if not newest_auction:
+            logger.info(f"cache miss {END_KEY}")
             newest_auction = (
                 AuctionLot.objects.filter(collected=True, sale_price__isnull=False)
                 .order_by("-auction__end_date")
