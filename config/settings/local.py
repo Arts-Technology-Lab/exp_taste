@@ -28,23 +28,22 @@ CACHES = {
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-	"default": {
-		"ENGINE": "django.db.backends.postgresql_psycopg2",
-		"NAME": "exp_taste_db",
-		"USER": "exp_taste_user",
-		"PASSWORD": env("exp_taste_DB_PW"), # store in environment variable
-		"HOST": "localhost",
-		"PORT": "",                      # Set to empty string for default.
-	},
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PW"),  # store in environment variable
+        "HOST": "localhost",
+        "PORT": "",  # Set to empty string for default.
+    },
     "prod": {
-		"ENGINE": "django.db.backends.postgresql_psycopg2",
-		"NAME": "exp_taste_db",
-		"USER": "exp_taste_user",
-		"PASSWORD": env("prod_DB_PW"), # store in environment variable
-		"HOST": env("DB_HOST", default="localhost"),
-		"PORT": "",                      # Set to empty string for default.
-	}
-
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("prod_DB_PW"),  # store in environment variable
+        "HOST": env("prod_DB_HOST", default="localhost"),
+        "PORT": "",  # Set to empty string for default.
+    },
 }
 
 DATABASES["default"]["ATOMIC_REQUESTS"] = True

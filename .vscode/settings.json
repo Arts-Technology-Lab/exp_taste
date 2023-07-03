@@ -1,27 +1,31 @@
 {
-    "python.linting.pylintEnabled": true,
-    "python.pythonPath": "/usr/local/src/env/exp_taste/bin/python",
-    "cSpell.ignoreWords": [
-        "a",
-        "boto",
-        "curr",
-        "divs",
-        "dstr",
-        "dstrs",
-        "elem",
-        "khtml",
-        "lot",
-        "mdash",
-        "multichoiceoption",
-        "openpyxl",
-        "pytz",
-        "qtype",
-        "root",
-        "s",
-        "static",
-        "storage",
-        "vals",
-        "xnoh"
-    ],
-    "restructuredtext.languageServer.disabled": true
+  "python.linting.pylintEnabled": true,
+  "python.pythonPath": "/usr/local/src/env/exp_taste/bin/python",
+  "cSpell.ignoreWords": [
+    "a",
+    "boto",
+    "curr",
+    "divs",
+    "dstr",
+    "dstrs",
+    "elem",
+    "khtml",
+    "lot",
+    "mdash",
+    "multichoiceoption",
+    "openpyxl",
+    "pytz",
+    "qtype",
+    "root",
+    "s",
+    "static",
+    "storage",
+    "vals",
+    "xnoh"
+  ],
+  "restructuredtext.languageServer.disabled": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.formatting.provider": "none"
 }
