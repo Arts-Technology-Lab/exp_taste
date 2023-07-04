@@ -59,12 +59,11 @@ class Home(TemplateView):
             sale_price__isnull=False,
             auction__end_date__gte=period_start,
             auction__end_date__lte=period_end,
-        )
-        num_candidates = candidates.count()
-        if num_candidates > 2:
-            selected = random.sample(range(0, num_candidates), 2)
-            a = candidates[selected[0]]
-            b = candidates[selected[1]]
+        ).order_by("?")
+        selected = list(candidates[:2])
+        if len(selected) == 2:
+            a = selected[0]
+            b = selected[1]
             context["lot_a"] = a
             context["lot_a_img"] = a.lotimage_set.all()[0]
             context["lot_b"] = b
